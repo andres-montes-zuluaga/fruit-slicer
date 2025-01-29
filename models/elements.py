@@ -27,9 +27,9 @@ class Element:
         print("Super! You got a heart back!")
 
 
+###### The following lines exist only for isolated tests of this kind
 
-
-fruit1 = Element(0, "Banana", "B", (50,50), 5, (0, 0), "S")
+"""fruit1 = Element(0, "Banana", "B", (50,50), 5, (0, 0), "S")
 
 fruit1.movement()
 fruit1.slice()
@@ -48,4 +48,4 @@ ice1.turn_on_frezzer()
 
 heart1 = Element(1, "Heart", "heart", (50,50), 5, (0, 0), "R")
 
-heart1.restore_heart()
+heart1.restore_heart()"""
