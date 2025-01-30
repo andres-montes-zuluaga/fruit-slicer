@@ -5,7 +5,7 @@ from random import randint
 # Parabolic motion parameters
 gravity = 0.5  # Strength of gravity (affects the curve)
 
-def draw_game(window, background, objects, corn, popcorn, window_width, window_height):
+def draw_game(window, background, objects, corn, corn_red, popcorn, window_width, window_height):
     window.blit(background, (0, 0))
 
     # Draw and update objects
@@ -17,6 +17,8 @@ def draw_game(window, background, objects, corn, popcorn, window_width, window_h
         # Draw the object
         if obj["type"] == "mais":
             window.blit(corn, (obj["x"], obj["y"]))
+        elif obj["type"] == "corn_red":
+            window.blit(corn_red, (obj["x"], obj["y"]))
         elif obj["type"] == "popcorn":
             window.blit(popcorn, (obj["x"], obj["y"]))
 
@@ -26,7 +28,13 @@ def draw_game(window, background, objects, corn, popcorn, window_width, window_h
 
 def spawn_object(window_height, objects):
     """Spawn a new object (butter or popcorn) with random initial velocity."""
-    obj_type = "mais" if randint(0, 1) == 0 else "popcorn"
+    if randint(0, 2) == 0:
+        obj_type = "mais"
+    elif randint(0, 2) == 1:
+        obj_type = "corn_red"
+    else:
+        obj_type = "popcorn"
+    #obj_type = "mais" if randint(0, 2) == 0 elif "corn_red" else "popcorn"
     x = 0  # Start from the left side of the screen
     y = window_height - 100  # Start near the bottom
     vx = randint(5, 10)  # Random horizontal speed
