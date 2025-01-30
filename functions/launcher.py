@@ -1,11 +1,24 @@
+import pygame
 from pygame import *
-from random import randint
+from random import randint, choice 
 
 
 # Parabolic motion parameters
 gravity = 0.5  # Strength of gravity (affects the curve)
 
+
+def draw_letter_above_object(window, font, obj):
+    """
+    Draw a random letter above the given object.
+    """
+
+    font = pygame.font.Font(None, 56)  # Default system font, size 36
+    font.set_bold(True)
+    text = font.render(obj["letter"], True, (255, 0, 0))  # Utilise l'objet Font pour rendre le texte
+    window.blit(text, (obj["x"] + 20, obj["y"] - 20))  # Affiche le texte à l'écran
+
 def draw_game(window, background_play, objects, special_objects_easy, corn_yellow, corn_red, corn_blue, corn_green, bomb, ice, life, window_width, window_height):
+    
     window.blit(background_play, (0, 0))
 
     # Draw and update objects
@@ -23,6 +36,8 @@ def draw_game(window, background_play, objects, special_objects_easy, corn_yello
             window.blit(corn_blue, (obj["x"], obj["y"]))
         elif obj["type"] == "corn_green":
             window.blit(corn_green, (obj["x"], obj["y"]))
+
+        draw_letter_above_object(window, font, obj)
 
         # Remove objects that go off-screen
         if obj["x"] > window_width or obj["y"] > window_height:
@@ -43,6 +58,8 @@ def draw_game(window, background_play, objects, special_objects_easy, corn_yello
         elif obj["type"] == "life":
             window.blit(life, (obj["x"], obj["y"]))
 
+        draw_letter_above_object(window, font, obj)
+
         # Remove special objects [easy mode] that go off-screen
         if obj["x"] > window_width or obj["y"] > window_height:
             special_objects_easy.remove(obj)
@@ -61,7 +78,8 @@ def spawn_corn(window_height, objects):
     y = window_height - 100  # Start near the bottom
     vx = randint(5, 10)  # Random horizontal speed
     vy = randint(-20, -10)  # Random vertical speed (upwards)
-    objects.append({"type": obj_type, "x": x, "y": y, "vx": vx, "vy": vy})
+    letter = choice ("ABCDEFGHIJKLMNOPQRSTUVWXYZ") # Random letter
+    objects.append({"type": obj_type, "x": x, "y": y, "vx": vx, "vy": vy, "letter": letter})
 
 def spawn_specials_easy(window_height, special_objects_easy):
     """Spawn a new special object (bomb, ice, life) with random initial velocity."""
@@ -75,4 +93,7 @@ def spawn_specials_easy(window_height, special_objects_easy):
     y = window_height - 100  # Start near the bottom
     vx = randint(8, 12)  # Random horizontal speed
     vy = randint(-22, -12)  # Random vertical speed (upwards)
-    special_objects_easy.append({"type": obj_type, "x": x, "y": y, "vx": vx, "vy": vy})
+    letter = choice ("ABCDEFGHIJKLMNOPQRSTUVWXYZ") # Random letter
+    special_objects_easy.append({"type": obj_type, "x": x, "y": y, "vx": vx, "vy": vy, "letter": letter})
+
+
