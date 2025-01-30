@@ -12,20 +12,20 @@ window = display.set_mode((window_width, window_height))
 display.set_caption('Corn Ninja')
 
 # Load images
-background_main_menu = image.load('assets/img/mainmenu1.jpg').convert()
-background_game_window = image.load('assets/img/CornNinja.jpg').convert()
-corn = image.load('assets/img/mais.jpg').convert()
-popcorn = image.load('assets/img/popcorn.jpg').convert()
-play_button = image.load('assets/img/play_button.jpg').convert()
-lang_button = image.load('assets/img/lang_button.png').convert()
+background_main_menu = image.load('assets/img/background_main_menu.jpg').convert()
+background_play = image.load('assets/img/background_play.jpg').convert()
+corn = image.load('assets/img/corn_yellow.jpg').convert()
+popcorn = image.load('assets/img/popcorn_yellow.jpg').convert()
+button_play = image.load('assets/img/button_play.jpg').convert()
+button_lang = image.load('assets/img/button_lang.png').convert()
 
 # Resize images if necessary
 background_main_menu = transform.scale(background_main_menu, (window_width, window_height))
-background_game_window = transform.scale(background_game_window, (window_width, window_height))
+background_play = transform.scale(background_play, (window_width, window_height))
 corn= transform.scale(corn, (50, 50))
 popcorn = transform.scale(popcorn, (50, 50))
-play_button = transform.scale(play_button, (70, 70))
-lang_button = transform.scale(lang_button, (70, 70))
+play_button = transform.scale(button_play, (70, 70))
+lang_button = transform.scale(button_lang, (70, 70))
 
 
 # Initial parameters
@@ -67,7 +67,7 @@ while running:
             state = 0
 
     elif state == 3:  # Game state
-        draw_game(window, background_game_window, objects, corn, popcorn, window_width, window_height)
+        draw_game(window, background_play, objects, corn, popcorn, window_width, window_height)
         if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
             state = 0
 
