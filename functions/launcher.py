@@ -17,9 +17,10 @@ def draw_letter_above_object(window, font, obj):
     text = font.render(obj["letter"], True, (255, 0, 0))  # Utilise l'objet Font pour rendre le texte
     window.blit(text, (obj["x"] + 20, obj["y"] - 20))  # Affiche le texte à l'écran
 
-def draw_game(window, background_play, objects, special_objects_easy, corn_yellow, corn_red, corn_blue, corn_green, bomb, ice, life, window_width, window_height):
+def draw_game(window, background_play, box, objects, special_objects_easy, corn_yellow, corn_red, corn_blue, corn_green, bomb, ice, life, window_width, window_height):
     
     window.blit(background_play, (0, 0))
+    window.blit(box, (0,490))
 
     # Draw and update objects
     for obj in objects:
