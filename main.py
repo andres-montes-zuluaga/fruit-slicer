@@ -87,7 +87,7 @@ while running:
             spawn_corn(window_height, objects)
 
         # Spawn special_objects_easy randomly
-        if randint(1, 200) < 1:  # 0.05% chance to spawn an object each frame
+        if randint(0, 200) < 1:  # 0.05% chance to spawn an object each frame
             spawn_specials_easy(window_height, special_objects_easy)
 
     display.flip()

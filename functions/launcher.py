@@ -23,12 +23,6 @@ def draw_game(window, background_play, objects, special_objects_easy, corn_yello
             window.blit(corn_blue, (obj["x"], obj["y"]))
         elif obj["type"] == "corn_green":
             window.blit(corn_green, (obj["x"], obj["y"]))
-        elif obj["type"] == "bomb":
-            window.blit(bomb, (obj["x"], obj["y"]))
-        elif obj["type"] == "ice":
-            window.blit(ice, (obj["x"], obj["y"]))
-        elif obj["type"] == "life":
-            window.blit(life, (obj["x"], obj["y"]))
 
         # Remove objects that go off-screen
         if obj["x"] > window_width or obj["y"] > window_height:
