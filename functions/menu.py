@@ -1,18 +1,13 @@
 from pygame import *
-from random import randint
+
 
 # Game functions
-def draw_menu(window):
-    window.fill((255, 0, 0))  # Red background
-    font_title = font.SysFont('comicsansms', 72)
-    title = font_title.render('Corn Ninja', True, (255, 255, 255))
-    window.blit(title, (250, 100))
-
-    font_button = font.SysFont('comicsansms', 36)
-    play_button = font_button.render('Play', True, (255, 255, 255))
-    language_button = font_button.render('Languages', True, (255, 255, 255))
-    window.blit(play_button, (400, 300))
-    window.blit(language_button, (380, 400))
+def draw_menu(window, background_main_menu, button_play, button_lang):
+    window.blit(background_main_menu, (0, 0))
+    button_lang
+    button_lang 
+    window.blit(button_play, (90, 430))
+    window.blit(button_lang, (90, 510))
 
 def draw_level_menu(window):
     window.fill((0, 0, 255))  # Blue background

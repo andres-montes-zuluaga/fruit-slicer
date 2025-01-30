@@ -7,21 +7,27 @@ from functions.launcher import draw_game, spawn_object
 pygame.init()
 
 # Window setup
-window_width, window_height = 900, 700
+window_width, window_height = 800, 600
 window = display.set_mode((window_width, window_height))
 display.set_caption('Corn Ninja')
 
 # Load images
-background = image.load('assets/img/cinema.png').convert()
-corn = image.load('assets/img/mais.jpg').convert()
-corn_red = image.load('assets/img/mais_rouge.jpg').convert()
-popcorn = image.load('assets/img/popcorn.jpg').convert()
+background_main_menu = image.load('assets/img/background_main_menu.jpg').convert()
+background_play = image.load('assets/img/background_play.jpg').convert()
+corn_yellow = image.load('assets/img/corn_yellow.jpg').convert()
+corn_red = image.load('assets/img/corn_red.jpg').convert()
+popcorn_yellow = image.load('assets/img/popcorn_yellow.jpg').convert()
+button_play = image.load('assets/img/button_play.jpg').convert()
+button_lang = image.load('assets/img/button_lang.png').convert()
 
 # Resize images if necessary
-background = transform.scale(background, (window_width, window_height))
+background_main_menu = transform.scale(background_main_menu, (window_width, window_height))
+background_play = transform.scale(background_play, (window_width, window_height))
 corn= transform.scale(corn, (50, 50))
-corn_red= transform.scale(corn_red, (50, 50))
 popcorn = transform.scale(popcorn, (50, 50))
+play_button = transform.scale(button_play, (70, 70))
+lang_button = transform.scale(button_lang, (70, 70))
+
 
 # Initial parameters
 running = True
@@ -41,7 +47,7 @@ while running:
     keys = key.get_pressed()
 
     if state == 0:  # Main menu
-        draw_menu(window)
+        draw_menu(window, background_main_menu, play_button, lang_button)
         if keys[K_p]:  # Press 'P' to go to the difficulty menu
             state = 1
         if keys[K_l]:  # Press 'L' to go to the language menu
@@ -62,7 +68,7 @@ while running:
             state = 0
 
     elif state == 3:  # Game state
-        draw_game(window, background, objects, corn, corn_red, popcorn, window_width, window_height)
+        draw_game(window, background_play, objects, corn_yellow, corn_red, popcorn_yellow, window_width, window_height)
         if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
             state = 0
 
