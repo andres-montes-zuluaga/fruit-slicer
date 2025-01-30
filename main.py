@@ -64,7 +64,7 @@ while running:
             state = 2
 
     elif state == 1:  # Difficulty menu
-        draw_level_menu(window)
+        draw_level_menu(window, background_main_menu)
         if keys[K_e]:  # Press 'E' to select Easy and go to the game
             state = 3
         if keys[K_h]:  # Press 'H' to select Hard (not implemented yet)
