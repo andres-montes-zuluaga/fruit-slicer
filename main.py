@@ -5,7 +5,7 @@ pygame.init()
 
 screen = pygame.display.set_mode((850,600))                 
 display.set_caption("Ninja Fruit")
-background = pygame.image.load("img/cinema.png").convert()
+background = pygame.image.load("assets/img/cinema.png").convert()
 
 
 running = True
