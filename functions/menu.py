@@ -2,12 +2,12 @@ from pygame import *
 
 
 # Game functions
-def draw_menu(window, background_main_menu, play_button, lang_button):
+def draw_menu(window, background_main_menu, button_play, button_lang):
     window.blit(background_main_menu, (0, 0))
-    play_button
-    lang_button 
-    window.blit(play_button, (90, 450))
-    window.blit(lang_button, (90, 530))
+    button_lang
+    button_lang 
+    window.blit(button_play, (90, 430))
+    window.blit(button_lang, (90, 510))
 
 def draw_level_menu(window):
     window.fill((0, 0, 255))  # Blue background
