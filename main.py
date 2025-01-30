@@ -14,11 +14,13 @@ display.set_caption('Corn Ninja')
 # Load images
 background = image.load('assets/img/cinema.png').convert()
 corn = image.load('assets/img/mais.jpg').convert()
+corn_red = image.load('assets/img/mais_rouge.jpg').convert()
 popcorn = image.load('assets/img/popcorn.jpg').convert()
 
 # Resize images if necessary
 background = transform.scale(background, (window_width, window_height))
 corn= transform.scale(corn, (50, 50))
+corn_red= transform.scale(corn_red, (50, 50))
 popcorn = transform.scale(popcorn, (50, 50))
 
 # Initial parameters
@@ -60,7 +62,7 @@ while running:
             state = 0
 
     elif state == 3:  # Game state
-        draw_game(window, background, objects, corn, popcorn, window_width, window_height)
+        draw_game(window, background, objects, corn, corn_red, popcorn, window_width, window_height)
         if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
             state = 0
 
