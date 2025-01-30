@@ -5,8 +5,8 @@ from random import randint
 # Parabolic motion parameters
 gravity = 0.5  # Strength of gravity (affects the curve)
 
-def draw_game(window, background_game_window, objects, corn, popcorn, window_width, window_height):
-    window.blit(background_game_window, (0, 0))
+def draw_game(window, background_play, objects, corn, popcorn, window_width, window_height):
+    window.blit(background_play, (0, 0))
 
     # Draw and update objects
     for obj in objects:
