@@ -1,28 +1,72 @@
 import pygame
+from pygame import *
+from random import randint 
+from functions.menu import draw_menu, draw_level_menu, draw_language_menu
+from functions.launcher import draw_game, spawn_object
 
 pygame.init()
 
-# Création de la fenêtre
-screen = pygame.display.set_mode((850, 600))                 
-pygame.display.set_caption("Ninja Fruit")
+# Window setup
+window_width, window_height = 900, 700
+window = display.set_mode((window_width, window_height))
+display.set_caption('Corn Ninja')
 
-# Chargement des images
-background = pygame.image.load("assets/img/cinema.png").convert()
-mais = pygame.image.load("assets/img/mais.jpg").convert()
+# Load images
+background = image.load('assets/img/cinema.png').convert()
+corn = image.load('assets/img/mais.jpg').convert()
+popcorn = image.load('assets/img/popcorn.jpg').convert()
 
+# Resize images if necessary
+background = transform.scale(background, (window_width, window_height))
+corn= transform.scale(corn, (50, 50))
+popcorn = transform.scale(popcorn, (50, 50))
+
+# Initial parameters
 running = True
+state = 0  # Initial state (menu)
+
+# Game objects
+objects = []  # List to store moving objects (corn and popcorn)
+
+# Main game loop
+clock = time.Clock()  # Create a clock object to control frame rate
 while running:
-    # Affichage du fond et des éléments
-    screen.blit(background, (0, 0))
-    screen.blit(mais, (230, 380))
-    
-    # Ajout d'un rectangle autour du maïs
-    pygame.draw.rect(screen, (255, 0, 0), (230, 380, mais.get_width(), mais.get_height()), 3)
-
-    pygame.display.flip()
-
-    for event in pygame.event.get(): 
-        if event.type == pygame.QUIT: 
+    for evt in event.get():  # Renamed the loop variable to 'evt'
+        if evt.type == QUIT:
             running = False
+            quit()
 
-pygame.quit()
+    keys = key.get_pressed()
+
+    if state == 0:  # Main menu
+        draw_menu(window)
+        if keys[K_p]:  # Press 'P' to go to the difficulty menu
+            state = 1
+        if keys[K_l]:  # Press 'L' to go to the language menu
+            state = 2
+
+    elif state == 1:  # Difficulty menu
+        draw_level_menu(window)
+        if keys[K_e]:  # Press 'E' to select Easy and go to the game
+            state = 3
+        if keys[K_h]:  # Press 'H' to select Hard (not implemented yet)
+            pass
+        if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
+            state = 0
+
+    elif state == 2:  # Language menu
+        draw_language_menu(window)
+        if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
+            state = 0
+
+    elif state == 3:  # Game state
+        draw_game(window, background, objects, corn, popcorn, window_width, window_height)
+        if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
+            state = 0
+
+        # Spawn new objects randomly
+        if randint(0, 100) < 5:  # 5% chance to spawn an object each frame
+            spawn_object(window_height, objects)
+
+    display.flip()
+    clock.tick(30)  # Limit the frame rate to 30 FPS
