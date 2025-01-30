@@ -23,8 +23,9 @@ button_lang = image.load('assets/img/button_lang.png').convert()
 # Resize images if necessary
 background_main_menu = transform.scale(background_main_menu, (window_width, window_height))
 background_play = transform.scale(background_play, (window_width, window_height))
-corn= transform.scale(corn, (50, 50))
-popcorn = transform.scale(popcorn, (50, 50))
+corn_yellow = transform.scale(corn_yellow, (50, 50))
+corn_red = transform.scale(corn_red, (50, 50))
+popcorn_yellow = transform.scale(popcorn_yellow, (50, 50))
 play_button = transform.scale(button_play, (70, 70))
 lang_button = transform.scale(button_lang, (70, 70))
 
