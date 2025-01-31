@@ -38,19 +38,5 @@ BUTTON_PLAY = transform.scale(BUTTON_PLAY, (70, 70))
 BUTTON_LANG = transform.scale(BUTTON_LANG, (70, 70))
 
 
-# Initial parameters
-RUNNING = True
-STATE = 0  # Initial state (menu)
-CLOCK = time.Clock()  # Create a clock object to control frame rate
-
-
-
-
-
-
-
-
-
-
 # Parabolic motion parameters
 GRAVITY = 0.5  # Strength of gravity (affects the curve)
