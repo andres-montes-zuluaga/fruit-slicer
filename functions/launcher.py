@@ -1,10 +1,7 @@
 import pygame
 from pygame import *
 from random import randint, choice 
-
-
-# Parabolic motion parameters
-gravity = 0.5  # Strength of gravity (affects the curve)
+from module.constant import *
 
 
 def draw_letter_above_object(window, font, obj):
@@ -26,7 +23,7 @@ def draw_game(window, background_play, box, objects, special_objects_easy, corn_
     for obj in objects:
         obj["x"] += obj["vx"]  # Update horizontal position
         obj["y"] += obj["vy"]  # Update vertical position
-        obj["vy"] += gravity  # Apply gravity
+        obj["vy"] += GRAVITY  # Apply gravity
 
         # Draw the object
         if obj["type"] == "corn_yellow":
@@ -49,7 +46,7 @@ def draw_game(window, background_play, box, objects, special_objects_easy, corn_
     for obj in special_objects_easy:
         obj["x"] += obj["vx"]  # Update horizontal position
         obj["y"] += obj["vy"]  # Update vertical position
-        obj["vy"] += gravity  # Apply gravity
+        obj["vy"] += GRAVITY  # Apply gravity
 
         # Draw the special object [easy mode]
         if  obj["type"] == "bomb":
