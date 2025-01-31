@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-def handle_events(state, mouse_pos):
+def button_events(state, mouse_pos):
     """Gère les événements clavier et souris, retourne le nouvel état."""
     for event in pygame.event.get():
         if event.type == QUIT:
