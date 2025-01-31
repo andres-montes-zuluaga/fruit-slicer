@@ -8,6 +8,10 @@ from module.constant import *
 
 pygame.init()
 
+# Initial parameters
+running = True
+state = 0  # Initial state (menu)
+clock = time.Clock()  # Create a clock object to control frame rate
 
 
 # Game objects
@@ -22,16 +26,21 @@ while running:
     state = button_events(state, mouse_pos)
 
     if state == 0:  # Main menu
-        draw_main_menu(WINDOW, background_main_menu, play_button, lang_button)
+        draw_main_menu(WINDOW, BACKGROUND_MAIN_MENU, BUTTON_PLAY, BUTTON_LANG)
 
     elif state == 1:  # Difficulty menu
-        draw_level_menu(WINDOW, background_main_menu)
+        draw_level_menu(WINDOW, BACKGROUND_MAIN_MENU)
 
     elif state == 2:  # Language menu
-        draw_language_menu(WINDOW, background_main_menu)
+        draw_language_menu(WINDOW, BACKGROUND_MAIN_MENU)
 
     elif state == 3:  # Game state
-        draw_game(WINDOW, background_play, box, objects, special_objects_easy, corn_yellow, corn_red, corn_blue, corn_green, bomb, ice, life, WINDOW_WIDTH, WINDOW_HEIGHT)
+        draw_game(WINDOW, BACKGROUND_PLAY, 
+                  BOX, 
+                  objects, special_objects_easy, 
+                  CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN, 
+                  BOMB, ICE, LIFE, 
+                  WINDOW_WIDTH, WINDOW_HEIGHT)
         # Spawn new objects randomly
         if randint(0, 100) < 1:  # 2% chance to spawn an object each frame
             spawn_corn(WINDOW_HEIGHT, objects)
