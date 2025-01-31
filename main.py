@@ -19,7 +19,7 @@ special_objects_easy = []  # List to store special objects (chicken, ice, heart)
 while running:
     # Get mouse position and click status
     mouse_pos = pygame.mouse.get_pos()
-    state = handle_events(state, mouse_pos)
+    state = button_events(state, mouse_pos)
 
     if state == 0:  # Main menu
         draw_main_menu(WINDOW, background_main_menu, play_button, lang_button)
@@ -31,7 +31,7 @@ while running:
         draw_language_menu(WINDOW, background_main_menu)
 
     elif state == 3:  # Game state
-        draw_game(WINDOW, background_play, box, objects, special_objects_easy, corn_yellow, corn_red, corn_blue, corn_green, bomb, ice, life, window_width, window_height)
+        draw_game(WINDOW, background_play, box, objects, special_objects_easy, corn_yellow, corn_red, corn_blue, corn_green, bomb, ice, life, WINDOW_WIDTH, WINDOW_HEIGHT)
         # Spawn new objects randomly
         if randint(0, 100) < 1:  # 2% chance to spawn an object each frame
             spawn_corn(WINDOW_HEIGHT, objects)
