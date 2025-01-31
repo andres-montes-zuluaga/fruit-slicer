@@ -9,6 +9,7 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 WINDOW = display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 display.set_caption('Corn Ninja')
 
+
 # Load images
 BACKGROUND_MAIN_MENU = image.load('assets/img/background_main_menu.jpg').convert()
 BACKGROUND_PLAY = image.load('assets/img/background_play.jpg').convert()
@@ -31,12 +32,12 @@ CORN_YELLOW = transform.scale(CORN_YELLOW, (50, 50))
 CORN_RED = transform.scale(CORN_RED, (50, 50))
 CORN_BLUE = transform.scale(CORN_BLUE, (50, 50))
 CORN_GREEN = transform.scale(CORN_GREEN, (50, 50))
-BOMB = transform.scale(BOMB, (100, 100))
-ICE = transform.scale(ICE, (100, 100))
-LIFE = transform.scale(LIFE, (100, 100))
+BOMB = transform.scale(BOMB, (50, 50))
+ICE = transform.scale(ICE, (50, 50))
+LIFE = transform.scale(LIFE, (50, 50))
 BUTTON_PLAY = transform.scale(BUTTON_PLAY, (70, 70))
 BUTTON_LANG = transform.scale(BUTTON_LANG, (70, 70))
 
 
 # Parabolic motion parameters
-GRAVITY = 0.5  # Strength of gravity (affects the curve)
+GRAVITY = 0.3  # Strength of gravity (affects the curve)
