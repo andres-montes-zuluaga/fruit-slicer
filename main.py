@@ -3,10 +3,13 @@ from pygame import *
 from random import randint 
 from functions.menu import draw_main_menu, draw_level_menu, draw_language_menu
 from functions.launcher import draw_game, spawn_corn, spawn_specials_easy
-from functions.events import *
+from functions.button_events import *
 from module.constant import *
+from functions.collision_object_events import *
 
 pygame.init()
+font = pygame.font.Font(None, 56)  # ✅ Créé UNE SEULE FOIS avant la boucle du jeu
+font.set_bold(True)
 
 # Initial parameters
 running = True
@@ -38,14 +41,15 @@ while running:
         draw_game(WINDOW, BACKGROUND_PLAY, 
                   BOX, 
                   objects, special_objects_easy, 
+                  font,
                   CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN, 
                   BOMB, ICE, LIFE, 
                   WINDOW_WIDTH, WINDOW_HEIGHT)
         # Spawn new objects randomly
-        if randint(0, 100) < 1:  # 2% chance to spawn an object each frame
+        if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
             spawn_corn(WINDOW_HEIGHT, objects)
         # Spawn special_objects_easy randomly
-        if randint(0, 200) < 1:  # 0.05% chance to spawn an object each frame
+        if randint(0, 100) < 2:  # 0.05% chance to spawn an object each frame
             spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
             
     display.flip()
