@@ -6,7 +6,7 @@ from pygame import *
 # Window setup
 WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
-window = display.set_mode((window_width, window_height))
+WINDOW = display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 display.set_caption('Corn Ninja')
 
 # Load images
@@ -24,8 +24,8 @@ button_play = image.load('assets/img/button_play.jpg').convert()
 button_lang = image.load('assets/img/button_lang.png').convert()
 
 # Resize images if necessary
-background_main_menu = transform.scale(background_main_menu, (window_width, window_height))
-background_play = transform.scale(background_play, (window_width, window_height))
+background_main_menu = transform.scale(background_main_menu, (WINDOW_WIDTH, WINDOW_HEIGHT))
+background_play = transform.scale(background_play, (WINDOW_WIDTH, WINDOW_HEIGHT))
 box = transform.scale(box, (110, 110))
 corn_yellow = transform.scale(corn_yellow, (50, 50))
 corn_red = transform.scale(corn_red, (50, 50))
