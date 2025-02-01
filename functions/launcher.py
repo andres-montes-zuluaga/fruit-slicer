@@ -4,6 +4,7 @@ from pygame import *
 from random import randint, choice 
 from module.constant import *
 from functions.collision_object_events import *
+import time
 
 
 def draw_letter_above_object(WINDOW, font, obj):
@@ -127,3 +128,21 @@ def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
     })
 
 
+#duration = 3  # Ice effect duration in seconds
+# Function to freeze all objects
+def freeze_objects(duration, objects, special_objects_easy):
+    #global objects, special_objects_easy
+    original_velocities = []
+
+    # Save original velocities and set them to 0
+    for obj in objects + special_objects_easy:
+        original_velocities.append((obj["vx"], obj["vy"]))
+        obj["vx"] = 0
+        obj["vy"] = 0
+
+    # Wait for the specified duration
+    time.sleep(duration)
+
+    # Restore original velocities
+    for i, obj in enumerate(objects + special_objects_easy):
+        obj["vx"], obj["vy"] = original_velocities[i]

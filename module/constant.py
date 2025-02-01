@@ -12,16 +12,17 @@ display.set_caption('Corn Ninja')
 
 # Load images
 BACKGROUND_MAIN_MENU = image.load('assets/img/background_main_menu.jpg').convert()
-BACKGROUND_PLAY = image.load('assets/img/background_play.jpg').convert()
-BOX = image.load('assets/img/box.jpg').convert_alpha()
+BACKGROUND_PLAY = image.load('assets/img/background_play.png').convert()
+BOX = image.load('assets/img/bucket.png').convert_alpha()
 CORN_YELLOW = image.load('assets/img/corn_yellow.jpg').convert()
-CORN_RED = image.load('assets/img/corn_red.jpg').convert()
-CORN_BLUE = image.load('assets/img/corn_blue.jpg').convert()
-CORN_GREEN = image.load('assets/img/corn_green.jpg').convert()
+CORN_RED = image.load('assets/img/corn_red.png').convert()
+CORN_BLUE = image.load('assets/img/corn_blue.png').convert()
+CORN_GREEN = image.load('assets/img/corn_green.png').convert()
 BOMB = image.load('assets/img/bomb.png').convert()
+BOMB_BIG = image.load('assets/img/bomb_big.png').convert()
 ICE = image.load('assets/img/ice.png').convert_alpha()
 LIFE = image.load('assets/img/life.png').convert_alpha()
-BUTTON_PLAY = image.load('assets/img/button_play.jpg').convert()
+BUTTON_PLAY = image.load('assets/img/button_play.png').convert()
 BUTTON_LANG = image.load('assets/img/button_lang.png').convert()
 
 # Resize images if necessary
