@@ -113,47 +113,57 @@ def draw_game(
 
 def spawn_corn(WINDOW_HEIGHT, objects):
     """Spawn a new object (butter or popcorn) with random initial velocity."""
-    obj_type = choice(["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"])
+    if len([obj for obj in objects if obj["type"].startswith("CORN")]) < MAX_CORN:
+        obj_type = choice(["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"])
     
-    x = 0  # Start from the left side of the screen
-    y = WINDOW_HEIGHT - 100  # Start near the bottom
-      # Adjust speed based on object type
-    if obj_type in ["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"]:
-        vx = randint(5, 10)  # Horizontal speed
-        vy = randint(-20, -10)  # Vertical speed (upwards)
-    else:
-        vx = randint(5, 10)  # Normal speed for other objects
-        vy = randint(-20, -10)  # Normal vertical speed
+        x = 0  # Start from the left side of the screen
+        y = WINDOW_HEIGHT - 100  # Start near the bottom
+        # Adjust speed based on object type
+        if obj_type in ["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"]:
+            vx = randint(5, 10)  # Horizontal speed
+            vy = randint(-20, -10)  # Vertical speed (upwards)
+        else:
+            vx = randint(5, 10)  # Normal speed for other objects
+            vy = randint(-20, -10)  # Normal vertical speed
 
-    letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Random letter
+        letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Random letter
 
-    objects.append({
-        "type": obj_type, 
-        "x": x, "y": y, 
-        "vx": vx, "vy": vy, 
-        "letter": letter
-    })
+        objects.append({
+            "type": obj_type, 
+            "x": x, "y": y, 
+            "vx": vx, "vy": vy, 
+            "letter": letter
+        })
 
 def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
     """Spawn a new special object (bomb, ice, life) with random initial velocity."""
-    obj_type = choice(["BOMB", "ICE", "LIFE"])  # Choisir aléatoirement un type d'objet spécial
+    if len([obj for obj in special_objects_easy if obj["type"] == "BOMB"]) < 1:  # Avoid too many bombs
+        obj_type = choice(["BOMB", "ICE", "LIFE"])  # Choisir aléatoirement un type d'objet spécial
 
-    x = 0  # Start from the left side of the screen
-    y = WINDOW_HEIGHT - 100  # Start near the bottom
+        x = 0  # Start from the left side of the screen
+        y = WINDOW_HEIGHT - 100  # Start near the bottom
 
-    # Ajuster la vitesse selon l'objet spécial
-    if obj_type in ["BOMB", "ICE", "LIFE"]:
-        vx = randint(3, 6)  # Vitesse horizontale
-        vy = randint(-20, -10)  # Vitesse verticale (vers le haut)
+        # Ajuster la vitesse selon l'objet spécial
+        if obj_type in ["BOMB", "ICE", "LIFE"]:
+            vx = SLOW_VELOCITY # Vitesse horizontale
+            vy = randint(-20, -10)  # Vitesse verticale (vers le haut)
 
-    letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Lettre aléatoire
+        letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Lettre aléatoire
 
-    special_objects_easy.append({
-        "type": obj_type, 
-        "x": x, "y": y, 
-        "vx": vx, "vy": vy, 
-        "letter": letter
-    })
+        special_objects_easy.append({
+            "type": obj_type, 
+            "x": x, "y": y, 
+            "vx": vx, "vy": vy, 
+            "letter": letter
+        })
+
+corn_count = 0
+# Function to handle the appearance of the bomb after 10 corn transformations
+def handle_bomb_spawn(special_objects_easy):
+    global corn_count
+    if corn_count >= 10:
+        spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
+        corn_count = 0  # Reset after spawning the bomb
 
 
 #duration = 3  # Ice effect duration in seconds
@@ -188,26 +198,9 @@ def transform_corn_to_popcorn(objects, keys):
         "CORN_GREEN": ["POPCORN_GREEN1", "POPCORN_GREEN2", "POPCORN_GREEN3"]
     }
 
+    global corn_count
+
     for obj in objects:
         if obj["type"] in popcorn_variants and keys[pygame.key.key_code(obj["letter"])]:
             obj["type"] = choice(popcorn_variants[obj["type"]])  # Transformation aléatoire en popcorn
-
-def defuse_bomb(objects, special_objects_easy, keys):
-    """
-    Désactive la bombe si la bonne touche est pressée.
-    Retire l'objet de la liste des objets et réinitialise le compte à rebours.
-    """
-    for obj in special_objects_easy:
-        # Vérifier si l'objet est une bombe et si la bonne touche est pressée
-        if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
-            # Retirer la bombe de la liste des objets
-            if obj in special_objects_easy:
-                special_objects_easy.remove(obj)
-                
-            # Réinitialiser les paramètres relatifs à la bombe
-            global bomb_triggered, bomb_countdown
-            bomb_triggered = False
-            bomb_countdown = None
-
-            # Affichage de la confirmation si besoin
-            print("Bombe désactivée!")
+            corn_count += 1

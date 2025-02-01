@@ -9,7 +9,6 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 WINDOW = display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 display.set_caption('Corn Ninja')
 
-
 # Load images
 BACKGROUND_MAIN_MENU = image.load('assets/img/background_main_menu.jpg').convert()
 BACKGROUND_PLAY = image.load('assets/img/background_play.png').convert()
@@ -18,18 +17,18 @@ CORN_YELLOW = image.load('assets/img/corn_yellow.jpg').convert()
 CORN_RED = image.load('assets/img/corn_red.png').convert()
 CORN_BLUE = image.load('assets/img/corn_blue.png').convert()
 CORN_GREEN = image.load('assets/img/corn_green.png').convert()
-POPCORN_YELLOW1 = image.load('assets/img/popcorn_yellow1.png').convert()
+POPCORN_YELLOW1 = image.load('assets/img/popcorn_yellow1.PNG').convert()
 POPCORN_YELLOW2 = image.load('assets/img/popcorn_yellow2.png').convert()
 POPCORN_YELLOW3 = image.load('assets/img/popcorn_yellow3.png').convert()
 POPCORN_RED1 = image.load('assets/img/popcorn_red1.png').convert()
 POPCORN_RED2 = image.load('assets/img/popcorn_red2.png').convert()
 POPCORN_RED3 = image.load('assets/img/popcorn_red3.png').convert()
 POPCORN_BLUE1 = image.load('assets/img/popcorn_blue1.png').convert()
-POPCORN_BLUE2 = image.load('assets/img/popcorn_red2.png').convert()
-POPCORN_BLUE3 = image.load('assets/img/popcorn_red3.png').convert()
+POPCORN_BLUE2 = image.load('assets/img/popcorn_blue2.png').convert()
+POPCORN_BLUE3 = image.load('assets/img/popcorn_blue3.png').convert()
 POPCORN_GREEN1 = image.load('assets/img/popcorn_green1.png').convert()
-POPCORN_GREEN2 = image.load('assets/img/popcorn_red2.png').convert()
-POPCORN_GREEN3 = image.load('assets/img/popcorn_red3.png').convert()
+POPCORN_GREEN2 = image.load('assets/img/popcorn_green2.png').convert()
+POPCORN_GREEN3 = image.load('assets/img/popcorn_green3.png').convert()
 BOMB = image.load('assets/img/bomb.png').convert()
 BOMB_BIG = image.load('assets/img/bomb_big.png').convert()
 ICE = image.load('assets/img/ice.png').convert_alpha()
@@ -63,6 +62,12 @@ LIFE = transform.scale(LIFE, (50, 50))
 BUTTON_PLAY = transform.scale(BUTTON_PLAY, (70, 70))
 BUTTON_LANG = transform.scale(BUTTON_LANG, (70, 70))
 
+# Max corn on screen (easy mode)
+MAX_CORN = 3
+
+# Special object speeds
+SPECIAL_OBJECT_SPEED = 2
 
 # Parabolic motion parameters
 GRAVITY = 0.3  # Strength of gravity (affects the curve)
+SLOW_VELOCITY = 1

@@ -34,6 +34,8 @@ bomb_triggered = False  # Flag to check if bomb is triggered
 # Game objects
 objects = []  # List to store moving objects (corn and popcorn)
 special_objects_easy = []  # List to store special objects (chicken, ice, heart)
+corn_count = 0
+
 
 # Play the initial cinema sound
 cinema_sound.play(-1)
@@ -92,10 +94,16 @@ while running:
         if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
             spawn_corn(WINDOW_HEIGHT, objects)
         # Spawn special_objects_easy randomly
-        if randint(0, 200) < 3:  # 0.05% chance to spawn an object each frame
-            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
+        if randint(0, 200) < 3 and any(obj["type"].startswith("CORN") for obj in objects):  # Only spawn ice if there are corn
+            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)  # 0.05% chance to spawn an object each frame
+        
 
-        # Check for bomb countdown
+        keys = pygame.key.get_pressed()
+        transform_corn_to_popcorn(objects, keys)
+        
+        handle_bomb_spawn(special_objects_easy)
+
+          # Check for bomb countdown
         if bomb_triggered:
             if bomb_countdown is None:
                 bomb_countdown = pygame.time.get_ticks() + 2000  # 2 seconds countdown
@@ -104,10 +112,8 @@ while running:
                 WINDOW.blit(BOMB_BIG, (0, 0))
                 game_over_text = font.render("GAME OVER", True, (255, 0, 0))
                 WINDOW.blit(game_over_text, (0, 0))
-                pygame.display.flip()
-
+                display.flip()
                 pygame.time.delay(5000)  # Display for 5 seconds
-                
                 state = 0  # Return to main menu
                 bomb_triggered = False
                 bomb_countdown = None
@@ -115,18 +121,26 @@ while running:
                 special_objects_easy.clear()
                 continue
 
-    keys = pygame.key.get_pressed()
+        # Spawn new objects randomly
+        if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
+            spawn_corn(WINDOW_HEIGHT, objects)
+        # Spawn special_objects_easy randomly
+        if randint(0, 400) < 1:  # 0.05% chance to spawn an object each frame
+            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
+        
+        keys = pygame.key.get_pressed()
                 
-    for obj in objects + special_objects_easy:
-    # Check if the key for the ICE object is pressed
-        if obj["type"] == "ICE" and keys[pygame.key.key_code(obj["letter"])]:
-         freeze_objects(5, objects, special_objects_easy)
-    # Check if the key for the BOMB object is pressed
-        if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
-         defuse_bomb(objects, special_objects_easy, keys)
+        for obj in objects + special_objects_easy:
+            # Check if the key for the ICE object is pressed
+            if obj["type"] == "ICE" and keys[pygame.key.key_code(obj["letter"])]:
+                freeze_objects(5, objects, special_objects_easy)
+            # Check if the key for the BOMB object is pressed
+            if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
+                bomb_triggered = False
+                bomb_countdown = None
 
-    keys = pygame.key.get_pressed()
-    transform_corn_to_popcorn(objects, keys)
+            if obj["type"] == "BOMB":
+                bomb_triggered = True
 
     display.flip()
     clock.tick(30)  # Limit the frame rate to 30 FPS
