@@ -1,83 +1,96 @@
 import pygame
-from pygame import *
 from random import randint 
-from functions.menu import draw_menu, draw_level_menu, draw_language_menu
-from functions.launcher import draw_game, spawn_object
+from functions.menu import draw_main_menu, draw_level_menu, draw_language_menu
+from functions.launcher import *
+from functions.button_events import *
+from module.constant import *
+from functions.collision_object_events import *
 
 pygame.init()
+pygame.mixer.init()
 
-# Window setup
-window_width, window_height = 800, 600
-window = display.set_mode((window_width, window_height))
-display.set_caption('Corn Ninja')
+# Load sounds & music
+cinema_sound = pygame.mixer.Sound('assets/snd/cinema.wav')
+game_music = 'assets/snd/music.wav'
 
-# Load images
-background_main_menu = image.load('assets/img/background_main_menu.jpg').convert()
-background_play = image.load('assets/img/background_play.jpg').convert()
-corn_yellow = image.load('assets/img/corn_yellow.jpg').convert()
-popcorn = image.load('assets/img/popcorn_yellow.jpg').convert()
-button_play = image.load('assets/img/button_play.jpg').convert()
-button_lang = image.load('assets/img/button_lang.png').convert()
+popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
 
-
-
-# Resize images if necessary
-background_main_menu = transform.scale(background_main_menu, (window_width, window_height))
-background_play = transform.scale(background_play, (window_width, window_height))
-corn= transform.scale(corn_yellow, (50, 50))
-popcorn = transform.scale(popcorn, (50, 50))
-button_play = transform.scale(button_play, (70, 70))
-button_lang = transform.scale(button_lang, (70, 70))
-
+font = pygame.font.Font(None, 56)  
+font.set_bold(True)
 
 # Initial parameters
 running = True
 state = 0  # Initial state (menu)
+clock = time.Clock()  # Create a clock object to control frame rate
+cinema_on = False  # Set to False to ensure cinema_sound plays initially
+music_on = False
 
 # Game objects
 objects = []  # List to store moving objects (corn and popcorn)
-lives = 3
-score = 0
+special_objects_easy = []  # List to store special objects (chicken, ice, heart)
+
+# Play the initial cinema sound
+cinema_sound.play(-1)
+cinema_on = True
 
 # Main game loop
-clock = time.Clock()  # Create a clock object to control frame rate
 while running:
-    for event in pygame.event.get():  # Renamed the loop variable to 'evt'
-        if event.type == QUIT:
-            running = False
-            quit()
-
-    keys = key.get_pressed()
-
+    # Get mouse position and click status
+    mouse_pos = pygame.mouse.get_pos()
+    state = button_events(state, mouse_pos)
+    
     if state == 0:  # Main menu
-        draw_menu(window, background_main_menu, button_play, button_lang)
-        if keys[K_p]:  # Press 'P' to go to the difficulty menu
-            state = 1
-        if keys[K_l]:  # Press 'L' to go to the language menu
-            state = 2
+        draw_main_menu(WINDOW, BACKGROUND_MAIN_MENU, BUTTON_PLAY, BUTTON_LANG)
+        if not cinema_on:
+            pygame.mixer.music.stop()
+            cinema_sound.play(-1)
+            cinema_on = True
+            music_on = False
 
     elif state == 1:  # Difficulty menu
-        draw_level_menu(window)
-        if keys[K_e]:  # Press 'E' to select Easy and go to the game
-            state = 3
-        if keys[K_h]:  # Press 'H' to select Hard (not implemented yet)
-            pass
-        if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
-            state = 0
-
+        draw_level_menu(WINDOW, BACKGROUND_MAIN_MENU)
+        if not cinema_on:
+            pygame.mixer.music.stop()
+            cinema_sound.play(-1)
+            cinema_on = True
+            music_on = False
+            
     elif state == 2:  # Language menu
-        draw_language_menu(window)
-        if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
-            state = 0
-
+        draw_language_menu(WINDOW, BACKGROUND_MAIN_MENU)
+        if not cinema_on:
+            pygame.mixer.music.stop()
+            cinema_sound.play(-1)
+            cinema_on = True
+            music_on = False
+            
     elif state == 3:  # Game state
-        draw_game(window, background_play, objects, corn, popcorn, window_width, window_height)
-        if keys[K_ESCAPE]:  # Press 'ESC' to return to the main menu
-            state = 0
+        draw_game(WINDOW, BACKGROUND_PLAY, 
+                  BOX, 
+                  objects, special_objects_easy, 
+                  font,
+                  CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN, 
+                  BOMB, ICE, LIFE, 
+                  WINDOW_WIDTH, WINDOW_HEIGHT)
+        if not music_on:
+            cinema_sound.stop()
+            pygame.mixer.music.load(game_music)
+            pygame.mixer.music.play(-1)
+            cinema_on = False
+            music_on = True
 
-        # Spawn new objects randomly
-        if randint(0, 100) < 5:  # 5% chance to spawn an object each frame
-            spawn_object(window_height, objects)
+       
+        # Spawn new objects with a natural movement
+        if randint(0, 100) < 2:  # 2% chance to spawn an object each frame
+            spawn_corn(WINDOW_HEIGHT, objects)
 
-    display.flip()
-    clock.tick(30)  # Limit the frame rate to 30 FPS
+        # Spawn special objects (with a delay and lower probability)
+        current_time = pygame.time.get_ticks()
+        if current_time - start_time > special_spawn_delay and randint(0, 300) < 2:  
+            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
+
+        # Remove off-screen objects
+        objects = [obj for obj in objects if -50 < obj["x"] < WINDOW_WIDTH + 50 and -50 < obj["y"] < WINDOW_HEIGHT + 50]
+        special_objects_easy = [obj for obj in special_objects_easy if -50 < obj["x"] < WINDOW_WIDTH + 50 and -50 < obj["y"] < WINDOW_HEIGHT + 50]
+
+    pygame.display.flip()
+    clock.tick(60)  # Limit the frame rate to 30 FPS
