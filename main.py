@@ -2,7 +2,7 @@ import pygame
 from pygame import *
 from random import randint 
 from functions.menu import draw_main_menu, draw_level_menu, draw_language_menu
-from functions.launcher import draw_game, spawn_corn, spawn_specials_easy
+from functions.launcher import draw_game, spawn_corn, spawn_specials_easy, freeze_objects
 from functions.button_events import *
 from module.constant import *
 from functions.collision_object_events import *
@@ -85,6 +85,13 @@ while running:
         # Spawn special_objects_easy randomly
         if randint(0, 100) < 2:  # 0.05% chance to spawn an object each frame
             spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
-            
+        
+        keys = pygame.key.get_pressed()
+                
+        for obj in objects + special_objects_easy:
+            # Check if the key for the ICE object is pressed
+            if obj["type"] == "ICE" and keys[pygame.key.key_code(obj["letter"])]:
+                freeze_objects(5, objects, special_objects_easy)
+
     display.flip()
     clock.tick(30)  # Limit the frame rate to 30 FPS
