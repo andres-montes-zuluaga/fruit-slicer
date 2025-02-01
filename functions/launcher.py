@@ -11,15 +11,19 @@ def draw_letter_above_object(WINDOW, font, obj):
     """
     Draw a random letter above the given object.
     """
-    text = font.render(obj["letter"], True, (255, 0, 0))  # Utilise l'objet Font pour rendre le texte
-    WINDOW.blit(text, (obj["x"] + 20, obj["y"] - 20))  # Affiche le texte à l'écran
+    text = font.render(obj["letter"], True, (255, 255, 255))  # Utilise l'objet Font pour rendre le texte
+    WINDOW.blit(text, (obj["x"] + 15, obj["y"] - 35))  # Affiche le texte à l'écran
 
 def draw_game(
     WINDOW, BACKGROUND_PLAY, 
     BOX, 
     objects, special_objects_easy, 
     font,
-    CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN, 
+    CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
+    POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
+    POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
+    POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
+    POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
     BOMB, ICE, LIFE, 
     WINDOW_WIDTH, WINDOW_HEIGHT):
 
@@ -47,6 +51,30 @@ def draw_game(
             WINDOW.blit(CORN_BLUE, (obj["x"], obj["y"]))
         elif obj["type"] == "CORN_GREEN":
             WINDOW.blit(CORN_GREEN, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_YELLOW1":  # Ajout de l'affichage
+            WINDOW.blit(POPCORN_YELLOW1, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_YELLOW2":  # Ajout de l'affichage
+            WINDOW.blit(POPCORN_YELLOW2, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_YELLOW3":  # Ajout de l'affichage
+            WINDOW.blit(POPCORN_YELLOW3, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_RED1":
+            WINDOW.blit(POPCORN_RED1, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_RED2":
+            WINDOW.blit(POPCORN_RED2, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_RED3":
+            WINDOW.blit(POPCORN_RED3, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_BLUE1":
+            WINDOW.blit(POPCORN_BLUE1, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_BLUE2":
+            WINDOW.blit(POPCORN_BLUE2, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_BLUE3":
+            WINDOW.blit(POPCORN_BLUE3, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_GREEN1":
+            WINDOW.blit(POPCORN_GREEN1, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_GREEN2":
+            WINDOW.blit(POPCORN_GREEN2, (obj["x"], obj["y"]))
+        elif obj["type"] == "POPCORN_GREEN3":
+            WINDOW.blit(POPCORN_GREEN3, (obj["x"], obj["y"]))
 
         draw_letter_above_object(WINDOW, font, obj)
 
@@ -146,3 +174,40 @@ def freeze_objects(duration, objects, special_objects_easy):
     # Restore original velocities
     for i, obj in enumerate(objects + special_objects_easy):
         obj["vx"], obj["vy"] = original_velocities[i]
+
+
+def transform_corn_to_popcorn(objects, keys):
+    """
+    Transforme un objet CORN_X en POPCORN_X1, POPCORN_X2, POPCORN_X3 si la bonne touche est pressée.
+    """
+    # Dictionnaire des variantes de popcorn pour chaque type de corn
+    popcorn_variants = {
+        "CORN_YELLOW": ["POPCORN_YELLOW1", "POPCORN_YELLOW2", "POPCORN_YELLOW3"],
+        "CORN_RED": ["POPCORN_RED1", "POPCORN_RED2", "POPCORN_RED3"],
+        "CORN_BLUE": ["POPCORN_BLUE1", "POPCORN_BLUE2", "POPCORN_BLUE3"],
+        "CORN_GREEN": ["POPCORN_GREEN1", "POPCORN_GREEN2", "POPCORN_GREEN3"]
+    }
+
+    for obj in objects:
+        if obj["type"] in popcorn_variants and keys[pygame.key.key_code(obj["letter"])]:
+            obj["type"] = choice(popcorn_variants[obj["type"]])  # Transformation aléatoire en popcorn
+
+def defuse_bomb(objects, special_objects_easy, keys):
+    """
+    Désactive la bombe si la bonne touche est pressée.
+    Retire l'objet de la liste des objets et réinitialise le compte à rebours.
+    """
+    for obj in special_objects_easy:
+        # Vérifier si l'objet est une bombe et si la bonne touche est pressée
+        if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
+            # Retirer la bombe de la liste des objets
+            if obj in special_objects_easy:
+                special_objects_easy.remove(obj)
+                
+            # Réinitialiser les paramètres relatifs à la bombe
+            global bomb_triggered, bomb_countdown
+            bomb_triggered = False
+            bomb_countdown = None
+
+            # Affichage de la confirmation si besoin
+            print("Bombe désactivée!")

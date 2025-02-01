@@ -2,7 +2,7 @@ import pygame
 from pygame import *
 from random import randint 
 from functions.menu import draw_main_menu, draw_level_menu, draw_language_menu
-from functions.launcher import draw_game, spawn_corn, spawn_specials_easy, freeze_objects
+from functions.launcher import *
 from functions.button_events import *
 from module.constant import *
 from functions.collision_object_events import *
@@ -19,7 +19,7 @@ popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
 # Load images
 bomb_big_img = pygame.image.load('assets/img/bomb_big.png')
 
-font = pygame.font.Font(None, 56)  # ✅ Créé UNE SEULE FOIS avant la boucle du jeu
+font = pygame.font.Font(None, 56) 
 font.set_bold(True)
 
 # Initial parameters
@@ -74,7 +74,11 @@ while running:
                   BOX, 
                   objects, special_objects_easy, 
                   font,
-                  CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN, 
+                  CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
+                  POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
+                  POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
+                  POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
+                  POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
                   BOMB, ICE, LIFE, 
                   WINDOW_WIDTH, WINDOW_HEIGHT)
         if not music_on:
@@ -83,6 +87,13 @@ while running:
             pygame.mixer.music.play(-1)
             cinema_on = False
             music_on = True
+
+         # Spawn new objects randomly
+        if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
+            spawn_corn(WINDOW_HEIGHT, objects)
+        # Spawn special_objects_easy randomly
+        if randint(0, 200) < 3:  # 0.05% chance to spawn an object each frame
+            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
 
         # Check for bomb countdown
         if bomb_triggered:
@@ -93,8 +104,10 @@ while running:
                 WINDOW.blit(BOMB_BIG, (0, 0))
                 game_over_text = font.render("GAME OVER", True, (255, 0, 0))
                 WINDOW.blit(game_over_text, (0, 0))
-                display.flip()
+                pygame.display.flip()
+
                 pygame.time.delay(5000)  # Display for 5 seconds
+                
                 state = 0  # Return to main menu
                 bomb_triggered = False
                 bomb_countdown = None
@@ -102,26 +115,18 @@ while running:
                 special_objects_easy.clear()
                 continue
 
-        # Spawn new objects randomly
-        if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
-            spawn_corn(WINDOW_HEIGHT, objects)
-        # Spawn special_objects_easy randomly
-        if randint(0, 400) < 1:  # 0.05% chance to spawn an object each frame
-            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
-        
-        keys = pygame.key.get_pressed()
+    keys = pygame.key.get_pressed()
                 
-        for obj in objects + special_objects_easy:
-            # Check if the key for the ICE object is pressed
-            if obj["type"] == "ICE" and keys[pygame.key.key_code(obj["letter"])]:
-                freeze_objects(5, objects, special_objects_easy)
-            # Check if the key for the BOMB object is pressed
-            if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
-                bomb_triggered = False
-                bomb_countdown = None
+    for obj in objects + special_objects_easy:
+    # Check if the key for the ICE object is pressed
+        if obj["type"] == "ICE" and keys[pygame.key.key_code(obj["letter"])]:
+         freeze_objects(5, objects, special_objects_easy)
+    # Check if the key for the BOMB object is pressed
+        if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
+         defuse_bomb(objects, special_objects_easy, keys)
 
-            if obj["type"] == "BOMB":
-                bomb_triggered = True
+    keys = pygame.key.get_pressed()
+    transform_corn_to_popcorn(objects, keys)
 
     display.flip()
     clock.tick(30)  # Limit the frame rate to 30 FPS
