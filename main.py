@@ -35,7 +35,7 @@ bomb_triggered = False  # Flag to check if bomb is triggered
 objects = []  # List to store moving objects (corn and popcorn)
 special_objects_easy = []  # List to store special objects (chicken, ice, heart)
 corn_count = 0
-
+score = 0
 
 # Play the initial cinema sound
 cinema_sound.play(-1)
@@ -75,7 +75,7 @@ while running:
         draw_game(WINDOW, BACKGROUND_PLAY, 
                   BOX, 
                   objects, special_objects_easy, 
-                  font,
+                  font, score,
                   CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
                   POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
                   POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
@@ -141,6 +141,6 @@ while running:
 
             if obj["type"] == "BOMB":
                 bomb_triggered = True
-
+                
     display.flip()
     clock.tick(30)  # Limit the frame rate to 30 FPS

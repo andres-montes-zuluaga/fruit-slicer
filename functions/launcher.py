@@ -5,6 +5,7 @@ from random import randint, choice
 from module.constant import *
 import time
 
+score = 0
 
 def draw_letter_above_object(WINDOW, font, obj):
     """
@@ -17,7 +18,7 @@ def draw_game(
     WINDOW, BACKGROUND_PLAY, 
     BOX, 
     objects, special_objects_easy, 
-    font,
+    font, score,
     CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
     POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
     POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
@@ -25,6 +26,7 @@ def draw_game(
     POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
     BOMB, ICE, LIFE, 
     WINDOW_WIDTH, WINDOW_HEIGHT):
+
 
     WINDOW.blit(BACKGROUND_PLAY, (0, 0))
     WINDOW.blit(BOX, (0,490))
@@ -96,6 +98,10 @@ def draw_game(
         if obj in objects:
             objects.remove(obj)
 
+    # Draw the updated score at the top-right corner of the screen
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+    WINDOW.blit(score_text, (WINDOW_WIDTH - score_text.get_width() - 10, 10))
+
     # Create a stack to hold spécial objects to remove
     to_remove_specials= []
 
@@ -131,6 +137,8 @@ def draw_game(
         # Remove special objects [easy mode] that go off-screen
         if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
             to_remove_specials.append(obj)
+
+        
 
 def spawn_corn(WINDOW_HEIGHT, objects):
     """Spawn a new object (butter or popcorn) with random initial velocity."""
@@ -179,12 +187,14 @@ def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
         })
 
 corn_count = 0
+
 # Function to handle the appearance of the bomb after 10 corn transformations
 def handle_bomb_spawn(special_objects_easy):
     global corn_count
     if corn_count >= 10:
-        spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
-        corn_count = 0  # Reset after spawning the bomb
+        if not any(obj["type"] == "BOMB" for obj in special_objects_easy):  # Évite plusieurs bombes
+            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
+        corn_count = 0 # Reset after spawning the bomb
 
 
 #duration = 3  # Ice effect duration in seconds
@@ -208,6 +218,8 @@ def freeze_objects(duration, objects, special_objects_easy):
 
 
 def transform_corn_to_popcorn(objects, keys):
+    
+    global corn_count, score
     """
     Transforme un objet CORN_X en POPCORN_X1, POPCORN_X2, POPCORN_X3 si la bonne touche est pressée.
     """
@@ -219,9 +231,9 @@ def transform_corn_to_popcorn(objects, keys):
         "CORN_GREEN": ["POPCORN_GREEN1", "POPCORN_GREEN2", "POPCORN_GREEN3"]
     }
 
-    global corn_count
-
     for obj in objects:
         if obj["type"] in popcorn_variants and keys[pygame.key.key_code(obj["letter"])]:
             obj["type"] = choice(popcorn_variants[obj["type"]])  # Transformation aléatoire en popcorn
             corn_count += 1
+            score += 1 
+            print(f"Score mis à jour : {score}")
