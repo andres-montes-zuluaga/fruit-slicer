@@ -3,7 +3,6 @@ from pygame.locals import *
 from pygame import *
 from random import randint, choice 
 from module.constant import *
-from functions.collision_object_events import *
 import time
 
 
@@ -31,8 +30,7 @@ def draw_game(
     WINDOW.blit(BOX, (0,490))
 
     all_objects = objects + special_objects_easy
-    handle_collisions(all_objects, GRAVITY)  # Gérer les collisions avant d'afficher
-
+    
     # Create a stack to hold objects to remove
     to_remove = []
 
@@ -41,6 +39,17 @@ def draw_game(
         obj["x"] += obj["vx"]  # Update horizontal position
         obj["y"] += obj["vy"]  # Update vertical position
         obj["vy"] += GRAVITY  # Apply gravity
+
+
+    # Clamp the object positions to ensure they don't exceed the window bounds
+        if obj["x"] < 0:
+            obj["x"] = 0
+        elif obj["x"] > WINDOW_WIDTH - 50:  # 50 is the approximate width of the objects
+            obj["x"] = WINDOW_WIDTH - 50
+
+        if obj["y"] < 0:
+            obj["y"] = 0
+       
 
         # Draw the object
         if obj["type"] == "CORN_YELLOW":
@@ -97,6 +106,18 @@ def draw_game(
         obj["y"] += obj["vy"]  # Update vertical position
         obj["vy"] += GRAVITY   # Apply gravity
 
+
+
+     # Clamp the special object positions to ensure they don't exceed the window bounds
+        if obj["x"] < 0:
+            obj["x"] = 0
+        elif obj["x"] > WINDOW_WIDTH - 50:
+            obj["x"] = WINDOW_WIDTH - 50
+
+        if obj["y"] < 0:
+            obj["y"] = 0
+       
+
         # Draw the special object [easy mode]
         if  obj["type"] == "BOMB":
             WINDOW.blit(BOMB, (obj["x"], obj["y"]))
@@ -145,8 +166,8 @@ def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
 
         # Ajuster la vitesse selon l'objet spécial
         if obj_type in ["BOMB", "ICE", "LIFE"]:
-            vx = SLOW_VELOCITY # Vitesse horizontale
-            vy = randint(-20, -10)  # Vitesse verticale (vers le haut)
+            vx = randint(3, 6)
+            vy = randint(-20, -12)  # Vitesse verticale (vers le haut)
 
         letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Lettre aléatoire
 

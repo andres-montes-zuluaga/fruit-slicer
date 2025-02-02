@@ -5,7 +5,7 @@ from functions.menu import draw_main_menu, draw_level_menu, draw_language_menu
 from functions.launcher import *
 from functions.button_events import *
 from module.constant import *
-from functions.collision_object_events import *
+
 
 pygame.init()
 pygame.mixer.init()
