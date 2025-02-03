@@ -13,7 +13,6 @@ lives = 5
 combo_active = False
 combo_start_time = 0
 last_pop_time = 0
-combo_count = 0
 
 def draw_letter_above_object(WINDOW, font, obj):
     text = font.render(obj["letter"], True, (255, 255, 255))
@@ -33,7 +32,7 @@ def draw_game(
     life_font,
     WINDOW_WIDTH, WINDOW_HEIGHT):
     
-    global lives, state, combo_active, combo_start_time, combo_count
+    global lives, state, combo_active, combo_start_time
 
     WINDOW.blit(BACKGROUND_PLAY, (0, 0))
     WINDOW.blit(BOX, (0,490))
@@ -111,10 +110,8 @@ def draw_game(
                 WINDOW.blit(BOMB_BIG, (0, 0))
                 game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
                 score_text = font.render(f"Score = {score}", True, (255,0,0))
-                combo_text = font.render(f"Combos réalisés: {combo_count}", True, (255, 69, 0))
                 WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
-                WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
-                WINDOW.blit(combo_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 100))
+                WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
                 pygame.display.flip()
 
                 # Attendre un peu avant de retourner au menu (3 secondes dans cet exemple)
@@ -236,7 +233,7 @@ def freeze_objects(duration, objects, special_objects_easy):
 
 
 def transform_corn_to_popcorn(objects, keys, corn_count, score):
-    global last_pop_time, combo_active, combo_start_time, combo_count
+    global last_pop_time, combo_active, combo_start_time
 
     
     popcorn_variants = {
@@ -260,8 +257,7 @@ def transform_corn_to_popcorn(objects, keys, corn_count, score):
                 if not combo_active:
                     combo_active = True
                     combo_start_time = current_time
-                    combo_count += 1
-                score += 2  # Ajouter le bonus de combo
+                    score += 3  # Ajouter le bonus de combo
             else:
                 combo_active = False
 
@@ -271,6 +267,6 @@ def transform_corn_to_popcorn(objects, keys, corn_count, score):
 
 
 def draw_combo_message(WINDOW, font):
-    combo_text = font.render("Combo +2", True, (255, 215, 0))  # Couleur or
+    combo_text = font.render("Combo +3", True, (255, 215, 0))  # Couleur or
     text_rect = combo_text.get_rect(center=(WINDOW.get_width() // 2, WINDOW.get_height() // 2))
     WINDOW.blit(combo_text, text_rect)

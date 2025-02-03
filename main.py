@@ -115,10 +115,8 @@ while running:
             WINDOW.blit(BOMB_BIG, (0, 0))
             game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
             score_text = font.render(f"Score = {score}", True, (255,0,0))
-            combo_text = font.render(f"Combos réalisés: {combo_count}", True, (255, 69, 0))
             WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
-            WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 +50))
-            WINDOW.blit(combo_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 100))
+            WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 +50))
             pygame.display.flip()
             pygame.time.delay(5000)
             state = 0
@@ -127,6 +125,7 @@ while running:
             special_objects_easy.clear()
             score = 0
             lives = 5
+            
 
     elif state == 4 :
          if not game_over:
@@ -180,10 +179,8 @@ while running:
             WINDOW.blit(BOMB_BIG, (0, 0))
             game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
             score_text = font.render(f"Score = {score}", True, (255,0,0))
-            combo_text = font.render(f"Combos réalisés: {combo_count}", True, (255, 69, 0))
             WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
-            WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
-            WINDOW.blit(combo_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 100))
+            WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
             pygame.display.flip()
             pygame.time.delay(5000)
             state = 0
