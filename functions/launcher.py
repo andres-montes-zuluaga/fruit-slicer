@@ -10,6 +10,9 @@ pygame.mixer.init()
 popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
 score = 0
 lives = 5
+combo_active = False
+combo_start_time = 0
+last_pop_time = 0
 
 def draw_letter_above_object(WINDOW, font, obj):
     text = font.render(obj["letter"], True, (255, 255, 255))
@@ -29,7 +32,7 @@ def draw_game(
     life_font,
     WINDOW_WIDTH, WINDOW_HEIGHT):
     
-    global lives, state
+    global lives, state, combo_active, combo_start_time
 
     WINDOW.blit(BACKGROUND_PLAY, (0, 0))
     WINDOW.blit(BOX, (0,490))
@@ -58,7 +61,6 @@ def draw_game(
                 failed_corns.append(obj) # Ajouter à la liste des échecs
                 
 
-        
         if obj["type"] == "CORN_YELLOW":
             WINDOW.blit(CORN_YELLOW, (obj["x"], obj["y"]))
         elif obj["type"] == "CORN_RED":
@@ -158,7 +160,12 @@ def draw_game(
         if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
             to_remove_specials.append(obj)
 
-        
+          # Afficher le message de combo si actif
+    if combo_active:
+        draw_combo_message(WINDOW, font)
+        if time.time() - combo_start_time > 1.0:  # Le combo dure 1 seconde
+            combo_active = False
+
 def spawn_corn(WINDOW_HEIGHT, objects):
     if len([obj for obj in objects if obj["type"].startswith("CORN")]) < MAX_CORN:
         obj_type = choice(["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"])
@@ -225,6 +232,9 @@ def freeze_objects(duration, objects, special_objects_easy):
 
 
 def transform_corn_to_popcorn(objects, keys, corn_count, score):
+    global last_pop_time, combo_active, combo_start_time
+
+    
     popcorn_variants = {
         "CORN_YELLOW": ["POPCORN_YELLOW1", "POPCORN_YELLOW2", "POPCORN_YELLOW3"],
         "CORN_RED": ["POPCORN_RED1", "POPCORN_RED2", "POPCORN_RED3"],
@@ -232,11 +242,30 @@ def transform_corn_to_popcorn(objects, keys, corn_count, score):
         "CORN_GREEN": ["POPCORN_GREEN1", "POPCORN_GREEN2", "POPCORN_GREEN3"]
     }
 
+    current_time = time.time()
+
     for obj in objects:
         if obj["type"] in popcorn_variants and keys[pygame.key.key_code(obj["letter"])]:
             obj["type"] = choice(popcorn_variants[obj["type"]])
             corn_count += 1
             score += 1
             popcorn_snd.play()
+
+ # Vérifier si un combo est possible
+            if current_time - last_pop_time < 1.0:  # Moins d'une seconde depuis le dernier fruit
+                if not combo_active:
+                    combo_active = True
+                    combo_start_time = current_time
+                score += 2  # Ajouter le bonus de combo
+            else:
+                combo_active = False
+
+            last_pop_time = current_time
+
     return corn_count, score
 
+
+def draw_combo_message(WINDOW, font):
+    combo_text = font.render("Combo +2", True, (255, 215, 0))  # Couleur or
+    text_rect = combo_text.get_rect(center=(WINDOW.get_width() // 2, WINDOW.get_height() // 2))
+    WINDOW.blit(combo_text, text_rect)
