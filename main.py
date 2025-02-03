@@ -15,7 +15,7 @@ game_music = 'assets/snd/music.wav'
 
 popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
 
-bomb_big_img = pygame.image.load('assets/img/bomb_big.png')
+
 
 font = pygame.font.Font(None, 56)
 font.set_bold(True)
@@ -84,7 +84,7 @@ while running:
                       POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
                       POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
                       BOMB, ICE,
-                      lives, life_font,
+                      life_font,
                       WINDOW_WIDTH, WINDOW_HEIGHT)
             pygame.display.flip()
             
@@ -115,7 +115,7 @@ while running:
                         special_objects_easy.remove(obj)
 
         else:
-            WINDOW.blit(bomb_big_img, (0, 0))
+            WINDOW.blit(BOMB_BIG, (0, 0))
             game_over_text = font.render(f"GAME OVER ! SCORE = {score}", True, (255, 0, 0))
             WINDOW.blit(game_over_text, (WINDOW_WIDTH//2 - game_over_text.get_width()//2, WINDOW_HEIGHT//2 - game_over_text.get_height()//2))
             pygame.display.flip()
@@ -125,6 +125,7 @@ while running:
             objects.clear()
             special_objects_easy.clear()
             score = 0
+            lives = 5
 
     pygame.display.flip()
     clock.tick(30)

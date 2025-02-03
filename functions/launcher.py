@@ -24,9 +24,10 @@ def draw_game(
     POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
     POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
     BOMB, ICE,
-    lives, life_font,
+    life_font,
     WINDOW_WIDTH, WINDOW_HEIGHT):
     
+    global lives, state
 
     WINDOW.blit(BACKGROUND_PLAY, (0, 0))
     WINDOW.blit(BOX, (0,490))
@@ -94,18 +95,30 @@ def draw_game(
         if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
             to_remove.append(obj)
 
-    # Retirer les corns tombés
+     # Décrémenter les vies lorsque des corns tombent
     for obj in failed_corns:
         if obj in objects:
             objects.remove(obj)
-        # Décrémenter les vies lorsque des corns tombent
-        if lives > 0:
-            lives -= 1
-        else:
-            print("Game Over")
-            pygame.quit()
-            return
+            if lives > 1:
+                lives -= 1
+            else:
+                # Afficher l'écran de Game Over
+                WINDOW.blit(BOMB_BIG, (0, 0))
+                game_over_text = font.render(f"GAME OVER ! SCORE = {score}", True, (255, 0, 0))
+                WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2))
 
+                pygame.display.flip()
+
+                # Attendre un peu avant de retourner au menu (3 secondes dans cet exemple)
+                pygame.time.delay(3000)  # 3000 millisecondes = 3 secondes
+
+                # Réinitialiser les variables du jeu pour revenir au menu
+                state = 0  # Supposons que state = 0 correspond au menu principal
+                score = 0
+                lives = 5
+                objects.clear()
+                special_objects_easy.clear()
+                return
 
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
     WINDOW.blit(score_text, (WINDOW_WIDTH - score_text.get_width() - 10, 10))
