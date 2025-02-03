@@ -36,8 +36,8 @@ BOMB = image.load('assets/img/bomb.png').convert()
 BOMB_BIG = image.load('assets/img/bomb_big.png').convert()
 ICE = image.load('assets/img/ice.png').convert_alpha()
 LIFE = image.load('assets/img/life.png').convert_alpha()
-BUTTON_PLAY = image.load('assets/img/button_play.png').convert()
-BUTTON_LANG = image.load('assets/img/button_lang.png').convert()
+BUTTON_PLAY = image.load('assets/img/button_play.png').convert_alpha()
+BUTTON_LANG = image.load('assets/img/button_lang.png').convert_alpha()
 
 # Resize images if necessary
 BACKGROUND_MAIN_MENU = transform.scale(BACKGROUND_MAIN_MENU, (WINDOW_WIDTH, WINDOW_HEIGHT))
