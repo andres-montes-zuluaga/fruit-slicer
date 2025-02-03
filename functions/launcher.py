@@ -6,6 +6,8 @@ from random import randint, choice
 from module.constant import *
 import time
 
+pygame.mixer.init()
+popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
 score = 0
 lives = 5
 
@@ -235,6 +237,7 @@ def transform_corn_to_popcorn(objects, keys, corn_count, score):
             obj["type"] = choice(popcorn_variants[obj["type"]])
             corn_count += 1
             score += 1
+            popcorn_snd.play()
             print(f"Score mis à jour : {score}")
     return corn_count, score
 
