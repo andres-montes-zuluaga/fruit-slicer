@@ -13,6 +13,7 @@ lives = 5
 combo_active = False
 combo_start_time = 0
 last_pop_time = 0
+combo_count = 0
 
 def draw_letter_above_object(WINDOW, font, obj):
     text = font.render(obj["letter"], True, (255, 255, 255))
@@ -32,7 +33,7 @@ def draw_game(
     life_font,
     WINDOW_WIDTH, WINDOW_HEIGHT):
     
-    global lives, state, combo_active, combo_start_time
+    global lives, state, combo_active, combo_start_time, combo_count
 
     WINDOW.blit(BACKGROUND_PLAY, (0, 0))
     WINDOW.blit(BOX, (0,490))
@@ -108,9 +109,12 @@ def draw_game(
             else:
                 # Afficher l'écran de Game Over
                 WINDOW.blit(BOMB_BIG, (0, 0))
-                game_over_text = font.render(f"GAME OVER ! SCORE = {score}", True, (255, 0, 0))
-                WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2))
-
+                game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
+                score_text = font.render(f"Score = {score}", True, (255,0,0))
+                combo_text = font.render(f"Combos réalisés: {combo_count}", True, (255, 69, 0))
+                WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
+                WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
+                WINDOW.blit(combo_text, (WINDOW_WIDTH // 2 - combo_text.get_width() // 2, WINDOW_HEIGHT // 2 + 100))
                 pygame.display.flip()
 
                 # Attendre un peu avant de retourner au menu (3 secondes dans cet exemple)
@@ -232,7 +236,7 @@ def freeze_objects(duration, objects, special_objects_easy):
 
 
 def transform_corn_to_popcorn(objects, keys, corn_count, score):
-    global last_pop_time, combo_active, combo_start_time
+    global last_pop_time, combo_active, combo_start_time, combo_count
 
     
     popcorn_variants = {
@@ -256,6 +260,7 @@ def transform_corn_to_popcorn(objects, keys, corn_count, score):
                 if not combo_active:
                     combo_active = True
                     combo_start_time = current_time
+                    combo_count += 1
                 score += 2  # Ajouter le bonus de combo
             else:
                 combo_active = False
