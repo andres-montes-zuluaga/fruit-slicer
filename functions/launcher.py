@@ -111,12 +111,12 @@ def draw_game(
     WINDOW.blit(score_text, (WINDOW_WIDTH - score_text.get_width() - 10, 10))
     
     life_x = WINDOW_WIDTH - LIFE.get_width() - 10  # Align with score
-    life_y = 20 + score_text.get_height() # Below the score
+    life_y = 30 + score_text.get_height() # Below the score
     WINDOW.blit(LIFE, (life_x, life_y)) # Draw Life Image
 
     lives_text = life_font.render(str(lives), True, (255, 255, 255))
-    text_x = life_x + LIFE.get_width() - 10
-    WINDOW.blit(lives_text, (text_x, life_y - 10))
+    text_x = life_x + LIFE.get_width() - 70
+    WINDOW.blit(lives_text, (text_x, life_y + 10))
     
     to_remove_specials= []
 
