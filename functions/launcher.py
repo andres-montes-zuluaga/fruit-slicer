@@ -168,12 +168,12 @@ def spawn_corn(WINDOW_HEIGHT, objects):
 
 def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
     if len([obj for obj in special_objects_easy if obj["type"] == "BOMB"]) < 1:
-        obj_type = choice(["BOMB", "ICE", "LIFE"])
+        obj_type = choice(["BOMB", "ICE"])
 
         x = 0
         y = WINDOW_HEIGHT - 100
 
-        if obj_type in ["BOMB", "ICE", "LIFE"]:
+        if obj_type in ["BOMB", "ICE"]:
             vx = randint(3, 6)
             vy = randint(-20, -12)
 
