@@ -41,6 +41,7 @@ def draw_game(
 
     to_remove = []
     failed_corns= []
+    to_remove_specials= []
 
     for obj in all_objects:
         obj["x"] += obj["vx"]
@@ -93,11 +94,18 @@ def draw_game(
             WINDOW.blit(POPCORN_GREEN2, (obj["x"], obj["y"]))
         elif obj["type"] == "POPCORN_GREEN3":
             WINDOW.blit(POPCORN_GREEN3, (obj["x"], obj["y"]))
+        elif obj["type"] == "BOMB":
+            WINDOW.blit(BOMB, (obj["x"], obj["y"]))
+        elif obj["type"] == "ICE":
+            WINDOW.blit(ICE, (obj["x"], obj["y"]))
 
         draw_letter_above_object(WINDOW, font, obj)
 
         if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
             to_remove.append(obj)
+
+        if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
+            to_remove_specials.append(obj)
 
      # Décrémenter les vies lorsque des corns tombent
     for obj in failed_corns:
@@ -135,31 +143,7 @@ def draw_game(
     lives_text = life_font.render(str(lives), True, (255, 255, 255))
     text_x = life_x + LIFE.get_width() - 70
     WINDOW.blit(lives_text, (text_x, life_y + 10))
-    
-    to_remove_specials= []
-
-    for obj in special_objects_easy:
-        obj["x"] += obj["vx"]
-        obj["y"] += obj["vy"]
-        obj["vy"] += GRAVITY
-
-        if obj["x"] < 0:
-            obj["x"] = 0
-        elif obj["x"] > WINDOW_WIDTH - 50:
-            obj["x"] = WINDOW_WIDTH - 50
-
-        if obj["y"] < 0:
-            obj["y"] = 0
-
-        if obj["type"] == "BOMB":
-            WINDOW.blit(BOMB, (obj["x"], obj["y"]))
-        elif obj["type"] == "ICE":
-            WINDOW.blit(ICE, (obj["x"], obj["y"]))
-
-        draw_letter_above_object(WINDOW, font, obj)
-
-        if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
-            to_remove_specials.append(obj)
+                
 
           # Afficher le message de combo si actif
     if combo_active:
