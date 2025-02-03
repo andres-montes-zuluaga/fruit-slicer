@@ -1,59 +1,61 @@
+# launcher.py
 import pygame
 from pygame.locals import *
 from pygame import *
-from random import randint, choice 
+from random import randint, choice
 from module.constant import *
 import time
 
 score = 0
+lives = 5
 
 def draw_letter_above_object(WINDOW, font, obj):
-    """
-    Draw a random letter above the given object.
-    """
-    text = font.render(obj["letter"], True, (255, 255, 255))  # Utilise l'objet Font pour rendre le texte
-    WINDOW.blit(text, (obj["x"] + 15, obj["y"] - 35))  # Affiche le texte à l'écran
+    text = font.render(obj["letter"], True, (255, 255, 255))
+    WINDOW.blit(text, (obj["x"] + 15, obj["y"] - 35))
 
 def draw_game(
-    WINDOW, BACKGROUND_PLAY, 
-    BOX, 
-    objects, special_objects_easy, 
+    WINDOW, BACKGROUND_PLAY,
+    BOX,
+    objects, special_objects_easy,
     font, score,
     CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
     POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
     POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
     POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
     POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
-    BOMB, ICE, LIFE, 
+    BOMB, ICE,
+    lives, life_font,
     WINDOW_WIDTH, WINDOW_HEIGHT):
-
+    
 
     WINDOW.blit(BACKGROUND_PLAY, (0, 0))
     WINDOW.blit(BOX, (0,490))
 
     all_objects = objects + special_objects_easy
-    
-    # Create a stack to hold objects to remove
+
     to_remove = []
+    failed_corns= []
 
-    # Draw and update objects
     for obj in all_objects:
-        obj["x"] += obj["vx"]  # Update horizontal position
-        obj["y"] += obj["vy"]  # Update vertical position
-        obj["vy"] += GRAVITY  # Apply gravity
+        obj["x"] += obj["vx"]
+        obj["y"] += obj["vy"]
+        obj["vy"] += GRAVITY
 
-
-    # Clamp the object positions to ensure they don't exceed the window bounds
         if obj["x"] < 0:
             obj["x"] = 0
-        elif obj["x"] > WINDOW_WIDTH - 50:  # 50 is the approximate width of the objects
+        elif obj["x"] > WINDOW_WIDTH - 50:
             obj["x"] = WINDOW_WIDTH - 50
 
         if obj["y"] < 0:
             obj["y"] = 0
-       
 
-        # Draw the object
+        # Si un corn tombe au sol, on l'ajoute à la liste des échecs et on décrémente les vies
+        if obj["y"] > WINDOW_HEIGHT:
+            if obj["type"].startswith("CORN"): # Vérifie si c'est un corn
+                failed_corns.append(obj) # Ajouter à la liste des échecs
+                
+
+        
         if obj["type"] == "CORN_YELLOW":
             WINDOW.blit(CORN_YELLOW, (obj["x"], obj["y"]))
         elif obj["type"] == "CORN_RED":
@@ -62,11 +64,11 @@ def draw_game(
             WINDOW.blit(CORN_BLUE, (obj["x"], obj["y"]))
         elif obj["type"] == "CORN_GREEN":
             WINDOW.blit(CORN_GREEN, (obj["x"], obj["y"]))
-        elif obj["type"] == "POPCORN_YELLOW1":  # Ajout de l'affichage
+        elif obj["type"] == "POPCORN_YELLOW1":
             WINDOW.blit(POPCORN_YELLOW1, (obj["x"], obj["y"]))
-        elif obj["type"] == "POPCORN_YELLOW2":  # Ajout de l'affichage
+        elif obj["type"] == "POPCORN_YELLOW2":
             WINDOW.blit(POPCORN_YELLOW2, (obj["x"], obj["y"]))
-        elif obj["type"] == "POPCORN_YELLOW3":  # Ajout de l'affichage
+        elif obj["type"] == "POPCORN_YELLOW3":
             WINDOW.blit(POPCORN_YELLOW3, (obj["x"], obj["y"]))
         elif obj["type"] == "POPCORN_RED1":
             WINDOW.blit(POPCORN_RED1, (obj["x"], obj["y"]))
@@ -89,32 +91,40 @@ def draw_game(
 
         draw_letter_above_object(WINDOW, font, obj)
 
-        # Mark objects for removal if they go off-screen
         if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
             to_remove.append(obj)
 
-    # Remove objects after iteration
-    for obj in to_remove:
+    # Retirer les corns tombés
+    for obj in failed_corns:
         if obj in objects:
             objects.remove(obj)
+        # Décrémenter les vies lorsque des corns tombent
+        if lives > 0:
+            lives -= 1
+        else:
+            print("Game Over")
+            pygame.quit()
+            return
 
-    # Draw the updated score at the top-right corner of the screen
+
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
     WINDOW.blit(score_text, (WINDOW_WIDTH - score_text.get_width() - 10, 10))
+    
+    life_x = WINDOW_WIDTH - LIFE.get_width() - 10  # Align with score
+    life_y = 20 + score_text.get_height() # Below the score
+    WINDOW.blit(LIFE, (life_x, life_y)) # Draw Life Image
 
-    # Create a stack to hold spécial objects to remove
+    lives_text = life_font.render(str(lives), True, (255, 255, 255))
+    text_x = life_x + LIFE.get_width() - 10
+    WINDOW.blit(lives_text, (text_x, life_y - 10))
+    
     to_remove_specials= []
 
-    # Draw and update special objects [easy mode]
-        # Draw and update objects
     for obj in special_objects_easy:
-        obj["x"] += obj["vx"]  # Update horizontal position
-        obj["y"] += obj["vy"]  # Update vertical position
-        obj["vy"] += GRAVITY   # Apply gravity
+        obj["x"] += obj["vx"]
+        obj["y"] += obj["vy"]
+        obj["vy"] += GRAVITY
 
-
-
-     # Clamp the special object positions to ensure they don't exceed the window bounds
         if obj["x"] < 0:
             obj["x"] = 0
         elif obj["x"] > WINDOW_WIDTH - 50:
@@ -122,108 +132,84 @@ def draw_game(
 
         if obj["y"] < 0:
             obj["y"] = 0
-       
 
-        # Draw the special object [easy mode]
-        if  obj["type"] == "BOMB":
+        if obj["type"] == "BOMB":
             WINDOW.blit(BOMB, (obj["x"], obj["y"]))
         elif obj["type"] == "ICE":
             WINDOW.blit(ICE, (obj["x"], obj["y"]))
-        elif obj["type"] == "LIFE":
-            WINDOW.blit(LIFE, (obj["x"], obj["y"]))
 
         draw_letter_above_object(WINDOW, font, obj)
 
-        # Remove special objects [easy mode] that go off-screen
         if obj["x"] > WINDOW_WIDTH or obj["y"] > WINDOW_HEIGHT:
             to_remove_specials.append(obj)
 
         
-
 def spawn_corn(WINDOW_HEIGHT, objects):
-    """Spawn a new object (butter or popcorn) with random initial velocity."""
     if len([obj for obj in objects if obj["type"].startswith("CORN")]) < MAX_CORN:
         obj_type = choice(["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"])
-    
-        x = 0  # Start from the left side of the screen
-        y = WINDOW_HEIGHT - 100  # Start near the bottom
-        # Adjust speed based on object type
-        if obj_type in ["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"]:
-            vx = randint(5, 10)  # Horizontal speed
-            vy = randint(-20, -10)  # Vertical speed (upwards)
-        else:
-            vx = randint(5, 10)  # Normal speed for other objects
-            vy = randint(-20, -10)  # Normal vertical speed
 
-        letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Random letter
+        x = 0
+        y = WINDOW_HEIGHT - 100
+        if obj_type in ["CORN_YELLOW", "CORN_RED", "CORN_BLUE", "CORN_GREEN"]:
+            vx = randint(5, 10)
+            vy = randint(-20, -10)
+        else:
+            vx = randint(5, 10)
+            vy = randint(-20, -10)
+
+        letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
         objects.append({
-            "type": obj_type, 
-            "x": x, "y": y, 
-            "vx": vx, "vy": vy, 
+            "type": obj_type,
+            "x": x, "y": y,
+            "vx": vx, "vy": vy,
             "letter": letter
         })
 
 def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
-    """Spawn a new special object (bomb, ice, life) with random initial velocity."""
-    if len([obj for obj in special_objects_easy if obj["type"] == "BOMB"]) < 1:  # Avoid too many bombs
-        obj_type = choice(["BOMB", "ICE", "LIFE"])  # Choisir aléatoirement un type d'objet spécial
+    if len([obj for obj in special_objects_easy if obj["type"] == "BOMB"]) < 1:
+        obj_type = choice(["BOMB", "ICE", "LIFE"])
 
-        x = 0  # Start from the left side of the screen
-        y = WINDOW_HEIGHT - 100  # Start near the bottom
+        x = 0
+        y = WINDOW_HEIGHT - 100
 
-        # Ajuster la vitesse selon l'objet spécial
         if obj_type in ["BOMB", "ICE", "LIFE"]:
             vx = randint(3, 6)
-            vy = randint(-20, -12)  # Vitesse verticale (vers le haut)
+            vy = randint(-20, -12)
 
-        letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")  # Lettre aléatoire
+        letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
         special_objects_easy.append({
-            "type": obj_type, 
-            "x": x, "y": y, 
-            "vx": vx, "vy": vy, 
+            "type": obj_type,
+            "x": x, "y": y,
+            "vx": vx, "vy": vy,
             "letter": letter
         })
 
-corn_count = 0
 
-# Function to handle the appearance of the bomb after 10 corn transformations
-def handle_bomb_spawn(special_objects_easy):
-    global corn_count
+def handle_bomb_spawn(special_objects_easy, corn_count):
     if corn_count >= 10:
-        if not any(obj["type"] == "BOMB" for obj in special_objects_easy):  # Évite plusieurs bombes
+        if not any(obj["type"] == "BOMB" for obj in special_objects_easy):
             spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
-        corn_count = 0 # Reset after spawning the bomb
+        corn_count = 0
+        return
 
 
-#duration = 3  # Ice effect duration in seconds
-# Function to freeze all objects
 def freeze_objects(duration, objects, special_objects_easy):
-    #global objects, special_objects_easy
     original_velocities = []
 
-    # Save original velocities and set them to 0
     for obj in objects + special_objects_easy:
         original_velocities.append((obj["vx"], obj["vy"]))
         obj["vx"] = 0
         obj["vy"] = 0
 
-    # Wait for the specified duration
     time.sleep(duration)
 
-    # Restore original velocities
     for i, obj in enumerate(objects + special_objects_easy):
         obj["vx"], obj["vy"] = original_velocities[i]
 
 
-def transform_corn_to_popcorn(objects, keys):
-    
-    global corn_count, score
-    """
-    Transforme un objet CORN_X en POPCORN_X1, POPCORN_X2, POPCORN_X3 si la bonne touche est pressée.
-    """
-    # Dictionnaire des variantes de popcorn pour chaque type de corn
+def transform_corn_to_popcorn(objects, keys, corn_count, score):
     popcorn_variants = {
         "CORN_YELLOW": ["POPCORN_YELLOW1", "POPCORN_YELLOW2", "POPCORN_YELLOW3"],
         "CORN_RED": ["POPCORN_RED1", "POPCORN_RED2", "POPCORN_RED3"],
@@ -233,7 +219,9 @@ def transform_corn_to_popcorn(objects, keys):
 
     for obj in objects:
         if obj["type"] in popcorn_variants and keys[pygame.key.key_code(obj["letter"])]:
-            obj["type"] = choice(popcorn_variants[obj["type"]])  # Transformation aléatoire en popcorn
+            obj["type"] = choice(popcorn_variants[obj["type"]])
             corn_count += 1
-            score += 1 
+            score += 1
             print(f"Score mis à jour : {score}")
+    return corn_count, score
+

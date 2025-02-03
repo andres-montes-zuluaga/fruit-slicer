@@ -1,53 +1,48 @@
+# main.py
 import pygame
 from pygame import *
-from random import randint 
+from random import randint
 from functions.menu import draw_main_menu, draw_level_menu, draw_language_menu
 from functions.launcher import *
 from functions.button_events import *
 from module.constant import *
 
-
 pygame.init()
 pygame.mixer.init()
 
-# Load sounds & music
 cinema_sound = pygame.mixer.Sound('assets/snd/cinema.wav')
 game_music = 'assets/snd/music.wav'
 
 popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
 
-# Load images
 bomb_big_img = pygame.image.load('assets/img/bomb_big.png')
 
-font = pygame.font.Font(None, 56) 
+font = pygame.font.Font(None, 56)
 font.set_bold(True)
+life_font = pygame.font.Font(None, 36)
 
-# Initial parameters
 running = True
-state = 0  # Initial state (menu)
-clock = time.Clock()  # Create a clock object to control frame rate
-cinema_on = False  # Set to False to ensure cinema_sound plays initially
+state = 0
+clock = time.Clock()
+cinema_on = False
 music_on = False
-bomb_countdown = None  # Countdown timer for bomb
-bomb_triggered = False  # Flag to check if bomb is triggered
+bomb_countdown = None
+bomb_triggered = False
+game_over = False
 
-# Game objects
-objects = []  # List to store moving objects (corn and popcorn)
-special_objects_easy = []  # List to store special objects (chicken, ice, heart)
+objects = []
+special_objects_easy = []
 corn_count = 0
 score = 0
 
-# Play the initial cinema sound
 cinema_sound.play(-1)
 cinema_on = True
 
-# Main game loop
 while running:
-    # Get mouse position and click status
     mouse_pos = pygame.mouse.get_pos()
     state = button_events(state, mouse_pos)
-    
-    if state == 0:  # Main menu
+
+    if state == 0:
         draw_main_menu(WINDOW, BACKGROUND_MAIN_MENU, BUTTON_PLAY, BUTTON_LANG)
         if not cinema_on:
             pygame.mixer.music.stop()
@@ -55,92 +50,81 @@ while running:
             cinema_on = True
             music_on = False
 
-    elif state == 1:  # Difficulty menu
+    elif state == 1:
         draw_level_menu(WINDOW, BACKGROUND_MAIN_MENU)
         if not cinema_on:
             pygame.mixer.music.stop()
             cinema_sound.play(-1)
             cinema_on = True
             music_on = False
-            
-    elif state == 2:  # Language menu
+
+    elif state == 2:
         draw_language_menu(WINDOW, BACKGROUND_MAIN_MENU)
         if not cinema_on:
             pygame.mixer.music.stop()
             cinema_sound.play(-1)
             cinema_on = True
             music_on = False
+
+    elif state == 3:
+        if not game_over:
+            keys = pygame.key.get_pressed()
+            corn_count = transform_corn_to_popcorn(objects, keys, corn_count, score)
+            score = corn_count[1]
+            corn_count = corn_count[0]
+            handle_bomb_spawn(special_objects_easy, corn_count)
             
-    elif state == 3:  # Game state
-        draw_game(WINDOW, BACKGROUND_PLAY, 
-                  BOX, 
-                  objects, special_objects_easy, 
-                  font, score,
-                  CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
-                  POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
-                  POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
-                  POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
-                  POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
-                  BOMB, ICE, LIFE, 
-                  WINDOW_WIDTH, WINDOW_HEIGHT)
-        if not music_on:
-            cinema_sound.stop()
-            pygame.mixer.music.load(game_music)
-            pygame.mixer.music.play(-1)
-            cinema_on = False
-            music_on = True
+            draw_game(WINDOW, BACKGROUND_PLAY,
+                      BOX,
+                      objects, special_objects_easy,
+                      font, score,
+                      CORN_YELLOW, CORN_RED, CORN_BLUE, CORN_GREEN,
+                      POPCORN_YELLOW1, POPCORN_YELLOW2, POPCORN_YELLOW3,
+                      POPCORN_RED1, POPCORN_RED2, POPCORN_RED3,
+                      POPCORN_BLUE1, POPCORN_BLUE2, POPCORN_BLUE3,
+                      POPCORN_GREEN1, POPCORN_GREEN2, POPCORN_GREEN3,
+                      BOMB, ICE,
+                      lives, life_font,
+                      WINDOW_WIDTH, WINDOW_HEIGHT)
+            pygame.display.flip()
+            
+            if not music_on:
+                cinema_sound.stop()
+                pygame.mixer.music.load(game_music)
+                pygame.mixer.music.play(-1)
+                cinema_on = False
+                music_on = True
 
-         # Spawn new objects randomly
-        if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
-            spawn_corn(WINDOW_HEIGHT, objects)
-        # Spawn special_objects_easy randomly
-        if randint(0, 200) < 3 and any(obj["type"].startswith("CORN") for obj in objects):  # Only spawn ice if there are corn
-            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)  # 0.05% chance to spawn an object each frame
-        
+            if randint(0, 200) < 2:
+                spawn_corn(WINDOW_HEIGHT, objects)
+            if randint(0, 400) < 1 and any(obj["type"].startswith("CORN") for obj in objects):
+                spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
 
-        keys = pygame.key.get_pressed()
-        transform_corn_to_popcorn(objects, keys)
-        
-        handle_bomb_spawn(special_objects_easy)
+            for obj in special_objects_easy[:]:
+                if obj["type"] == "BOMB":
+                    if keys[pygame.key.key_code(obj["letter"])]:
+                        special_objects_easy.remove(obj)
+                    elif obj["y"] > WINDOW_HEIGHT:
+                        game_over = True
+                        break
+                elif obj["type"] == "ICE":
+                    if obj["y"] > WINDOW_HEIGHT:
+                        special_objects_easy.remove(obj)
+                    elif keys[pygame.key.key_code(obj["letter"])]:
+                        freeze_objects(5, objects, special_objects_easy)
+                        special_objects_easy.remove(obj)
 
-          # Check for bomb countdown
-        if bomb_triggered:
-            if bomb_countdown is None:
-                bomb_countdown = pygame.time.get_ticks() + 2000  # 2 seconds countdown
-            elif pygame.time.get_ticks() >= bomb_countdown:
-                # Display "GAME OVER" and bomb image
-                WINDOW.blit(BOMB_BIG, (0, 0))
-                game_over_text = font.render("GAME OVER", True, (255, 0, 0))
-                WINDOW.blit(game_over_text, (0, 0))
-                display.flip()
-                pygame.time.delay(5000)  # Display for 5 seconds
-                state = 0  # Return to main menu
-                bomb_triggered = False
-                bomb_countdown = None
-                objects.clear()
-                special_objects_easy.clear()
-                continue
+        else:
+            WINDOW.blit(bomb_big_img, (0, 0))
+            game_over_text = font.render(f"GAME OVER ! SCORE = {score}", True, (255, 0, 0))
+            WINDOW.blit(game_over_text, (WINDOW_WIDTH//2 - game_over_text.get_width()//2, WINDOW_HEIGHT//2 - game_over_text.get_height()//2))
+            pygame.display.flip()
+            pygame.time.delay(5000)
+            state = 0
+            game_over = False
+            objects.clear()
+            special_objects_easy.clear()
+            score = 0
 
-        # Spawn new objects randomly
-        if randint(0, 200) < 2:  # 2% chance to spawn an object each frame
-            spawn_corn(WINDOW_HEIGHT, objects)
-        # Spawn special_objects_easy randomly
-        if randint(0, 400) < 1:  # 0.05% chance to spawn an object each frame
-            spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
-        
-        keys = pygame.key.get_pressed()
-                
-        for obj in objects + special_objects_easy:
-            # Check if the key for the ICE object is pressed
-            if obj["type"] == "ICE" and keys[pygame.key.key_code(obj["letter"])]:
-                freeze_objects(5, objects, special_objects_easy)
-            # Check if the key for the BOMB object is pressed
-            if obj["type"] == "BOMB" and keys[pygame.key.key_code(obj["letter"])]:
-                bomb_triggered = False
-                bomb_countdown = None
-
-            if obj["type"] == "BOMB":
-                bomb_triggered = True
-                
-    display.flip()
-    clock.tick(30)  # Limit the frame rate to 30 FPS
+    pygame.display.flip()
+    clock.tick(30)
