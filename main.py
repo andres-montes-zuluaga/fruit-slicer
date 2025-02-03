@@ -13,9 +13,6 @@ pygame.mixer.init()
 cinema_sound = pygame.mixer.Sound('assets/snd/cinema.wav')
 game_music = 'assets/snd/music.wav'
 
-popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
-
-
 
 font = pygame.font.Font(None, 56)
 font.set_bold(True)
@@ -97,7 +94,7 @@ while running:
 
             if randint(0, 200) < 2:
                 spawn_corn(WINDOW_HEIGHT, objects)
-            if randint(0, 400) < 1 and any(obj["type"].startswith("CORN") for obj in objects):
+            if randint(0, 200) < 3 and any(obj["type"].startswith("CORN") for obj in objects):
                 spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy)
 
             for obj in special_objects_easy[:]:

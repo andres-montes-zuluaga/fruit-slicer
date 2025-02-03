@@ -190,7 +190,7 @@ def spawn_specials_easy(WINDOW_HEIGHT, special_objects_easy):
 
         if obj_type in ["BOMB", "ICE"]:
             vx = randint(3, 6)
-            vy = randint(-20, -12)
+            vy = randint(-20, -10)
 
         letter = choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -238,6 +238,5 @@ def transform_corn_to_popcorn(objects, keys, corn_count, score):
             corn_count += 1
             score += 1
             popcorn_snd.play()
-            print(f"Score mis à jour : {score}")
     return corn_count, score
 

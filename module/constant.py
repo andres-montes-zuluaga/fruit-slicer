@@ -9,6 +9,9 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 WINDOW = display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 display.set_caption('Corn Ninja')
 
+MAX_CORN_ON_SCREEN = 3  # Define the maximum number of corn on screen
+BOMB_SPAWN_THRESHOLD = 10  # Corn count before a bomb spawns
+
 # Load images
 BACKGROUND_MAIN_MENU = image.load('assets/img/background_main_menu.jpg').convert()
 BACKGROUND_PLAY = image.load('assets/img/background_play.png').convert()
@@ -70,4 +73,4 @@ SPECIAL_OBJECT_SPEED = 2
 
 # Parabolic motion parameters
 GRAVITY = 0.3  # Strength of gravity (affects the curve)
-SLOW_VELOCITY = 1
+SLOW_VELOCITY = 0.2
