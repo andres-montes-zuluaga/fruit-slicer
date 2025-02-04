@@ -37,13 +37,13 @@ def button_events(state, mouse_pos):
                     state = 2  # Aller au menu des langues
 
             elif state == 1:  # Menu de difficulté
-                easy_button_rect = pygame.Rect(90, 430, 100, 50)
-                hard_button_rect = pygame.Rect(90, 510, 100, 50)
+                BUTTON_EASY_rect = pygame.Rect(90, 430, 100, 50)
+                BUTTON_HARD_rect = pygame.Rect(90, 510, 100, 50)
 
-                if easy_button_rect.collidepoint(mouse_pos):
+                if BUTTON_EASY_rect.collidepoint(mouse_pos):
                     state = 3  # Démarrer en mode Easy
 
-                if hard_button_rect.collidepoint(mouse_pos):
+                if BUTTON_HARD_rect.collidepoint(mouse_pos):
                     state = 4  # Mode Hard 
 
             elif state == 2:  # Menu des langues

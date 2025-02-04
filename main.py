@@ -14,9 +14,10 @@ def main():
 
     cinema_sound = pygame.mixer.Sound('assets/snd/cinema.wav')
     game_music = 'assets/snd/music.wav'
+    rooster_snd = pygame.mixer.Sound('assets/snd/rooster.mp3')
 
 
-    font = pygame.font.Font(None, 56)
+    font = pygame.font.Font(None, 60)
     font.set_bold(True)
     life_font = pygame.font.Font(None, 36)
 
@@ -50,7 +51,7 @@ def main():
                 music_on = False
 
         elif state == 1:
-            draw_level_menu(WINDOW, BACKGROUND_MAIN_MENU)
+            draw_level_menu(WINDOW, BACKGROUND_MAIN_MENU, BUTTON_EASY, BUTTON_HARD)
             if not cinema_on:
                 pygame.mixer.music.stop()
                 cinema_sound.play(-1)
@@ -103,6 +104,7 @@ def main():
                     if obj["type"] == "BOMB":
                         if keys[pygame.key.key_code(obj["letter"])]:
                             special_objects_easy.remove(obj)
+                            rooster_snd.play()
                         elif obj["y"] > WINDOW_HEIGHT:
                             game_over = True
                             break
@@ -110,15 +112,16 @@ def main():
                         if obj["y"] > WINDOW_HEIGHT:
                             special_objects_easy.remove(obj)
                         elif keys[pygame.key.key_code(obj["letter"])]:
-                            freeze_objects(5, objects, special_objects_easy)
+                            freeze_objects(WINDOW, ICED, NOTIF_ICE, 5, objects, special_objects_easy, icecube_snd)
                             special_objects_easy.remove(obj)
 
             else:
                 WINDOW.blit(BOMB_BIG, (0, 0))
-                game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
-                score_text = font.render(f"Score = {score}", True, (255,0,0))
-                WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
-                WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 +50))
+                WINDOW.blit(BOMBED, (0,0))
+                chicken_snd.play()
+                score_text = font.render(f"SCORE = {score}", True, (255,0,0))
+                WINDOW.blit(GAME_OVER, (300,300))
+                WINDOW.blit(score_text, (300,520))
                 pygame.display.flip()
                 pygame.time.delay(5000)
                 state = 0
@@ -167,6 +170,7 @@ def main():
                     if obj["type"] == "BOMB":
                         if keys[pygame.key.key_code(obj["letter"])]:
                             special_objects_easy.remove(obj)
+                            rooster_snd.play()
                         elif obj["y"] > WINDOW_HEIGHT:
                             game_over = True
                             break
@@ -174,15 +178,16 @@ def main():
                         if obj["y"] > WINDOW_HEIGHT:
                             special_objects_easy.remove(obj)
                         elif keys[pygame.key.key_code(obj["letter"])]:
-                            freeze_objects(5, objects, special_objects_easy)
+                            freeze_objects(WINDOW, ICED, NOTIF_ICE, 5, objects, special_objects_easy, icecube_snd)
                             special_objects_easy.remove(obj)
 
             else:
                 WINDOW.blit(BOMB_BIG, (0, 0))
-                game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
-                score_text = font.render(f"Score = {score}", True, (255,0,0))
-                WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
-                WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
+                WINDOW.blit(BOMBED, (0,0))
+                chicken_snd.play()
+                score_text = font.render(f"SCORE = {score}", True, (255,0,0))
+                WINDOW.blit(GAME_OVER, (300,300))
+                WINDOW.blit(score_text, (300,520))
                 pygame.display.flip()
                 pygame.time.delay(5000)
                 state = 0

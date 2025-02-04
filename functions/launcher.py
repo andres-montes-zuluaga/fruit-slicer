@@ -8,6 +8,9 @@ import time
 
 pygame.mixer.init()
 popcorn_snd = pygame.mixer.Sound('assets/snd/popcorn.mp3')
+icecube_snd = pygame.mixer.Sound('assets/snd/icecube.mp3')
+chicken_snd = pygame.mixer.Sound('assets/snd/chicken.mp3')
+combo_snd = pygame.mixer.Sound('assets/snd/combo.mp3')
 score = 0
 lives = 5
 combo_active = False
@@ -116,10 +119,11 @@ def draw_game(
             else:
                 # Afficher l'écran de Game Over
                 WINDOW.blit(BOMB_BIG, (0, 0))
-                game_over_text = font.render("GAME OVER !", True, (255, 0, 0))
-                score_text = font.render(f"Score = {score}", True, (255,0,0))
-                WINDOW.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 - game_over_text.get_height() // 2 - 70))
-                WINDOW.blit(score_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, WINDOW_HEIGHT // 2 + 50))
+                WINDOW.blit(BOMBED, (0,0))
+                chicken_snd.play()
+                score_text = font.render(f"SCORE = {score}", True, (255,0,0))
+                WINDOW.blit(GAME_OVER, (300,300))
+                WINDOW.blit(score_text, (300,520))
                 pygame.display.flip()
 
                 # Attendre un peu avant de retourner au menu (3 secondes dans cet exemple)
@@ -141,13 +145,14 @@ def draw_game(
     WINDOW.blit(LIFE, (life_x, life_y)) # Draw Life Image
 
     lives_text = life_font.render(str(lives), True, (255, 255, 255))
-    text_x = life_x + LIFE.get_width() - 70
+    text_x = life_x + LIFE.get_width() - 80
     WINDOW.blit(lives_text, (text_x, life_y + 10))
                 
 
           # Afficher le message de combo si actif
     if combo_active:
         draw_combo_message(WINDOW, font)
+        combo_snd.play()
         if time.time() - combo_start_time > 1.0:  # Le combo dure 1 seconde
             combo_active = False
 
@@ -202,18 +207,35 @@ def handle_bomb_spawn(special_objects_easy, corn_count):
         return
 
 
-def freeze_objects(duration, objects, special_objects_easy):
+import pygame
+
+def freeze_objects(window, ICED, NOTIF_ICE, duration, objects, special_objects_easy, icecube_snd):
+    start_time = pygame.time.get_ticks()  # Récupère le temps actuel
     original_velocities = []
 
+    # Mettre les vitesses à zéro et afficher ICED
     for obj in objects + special_objects_easy:
         original_velocities.append((obj["vx"], obj["vy"]))
-        obj["vx"] = 0
-        obj["vy"] = 0
+        obj["vx"], obj["vy"] = 0, 0
 
-    time.sleep(duration)
+    icecube_snd.play()
 
+    # Afficher l'image de freeze
+    window.blit(ICED, (100, 100))  # Ajuste la position si nécessaire
+    window.blit(NOTIF_ICE, (1,0))
+    pygame.display.update()
+
+    # Attendre sans bloquer le programme
+    while pygame.time.get_ticks() - start_time < duration * 1000:
+        for event in pygame.event.get():  # Permet de ne pas bloquer Pygame
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+    # Restaurer les vitesses après le freeze
     for i, obj in enumerate(objects + special_objects_easy):
         obj["vx"], obj["vy"] = original_velocities[i]
+
 
 
 def transform_corn_to_popcorn(objects, keys, corn_count, score):
