@@ -81,6 +81,7 @@ FRENCH = transform.scale(FRENCH, (52, 52))
 ENGLISH = transform.scale(ENGLISH, (65, 65))
 NOTIF_ICE = transform.scale(NOTIF_ICE, (100, 100))
 
+
 # Max corn on screen (easy mode)
 MAX_CORN = 3
 
